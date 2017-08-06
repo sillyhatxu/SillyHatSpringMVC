@@ -8,8 +8,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.sillyhat.springmvc</groupId>
     <artifactId>SillyHat-stripe</artifactId>
     <packaging>jar</packaging>
+    <version>1.0</version>
 
     <name>SillyHat-stripe</name>
     <url>http://maven.apache.org</url>
@@ -29,8 +31,8 @@
         </dependency>
         <!-- 引入核心代码组件 -->
         <dependency>
-            <groupId>com.sillyhat.project</groupId>
-            <artifactId>SillyHatProject-core</artifactId>
+            <groupId>com.sillyhat.springmvc</groupId>
+            <artifactId>SillyHat-base</artifactId>
             <version>${com.sillyhat.springmvc.base.version}</version>
         </dependency>
         <!-- 引入Stripe https://stripe.com/sg 代码组件 -->

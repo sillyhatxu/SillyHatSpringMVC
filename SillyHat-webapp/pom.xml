@@ -10,12 +10,14 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>SillyHat-webapp</artifactId>
     <packaging>war</packaging>
+
     <name>SillyHat-webapp Webapp</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <com.sillyhat.springmvc.base.version>1.0</com.sillyhat.springmvc.base.version>
+        <com.sillyhat.springmvc.stripe.version>1.0</com.sillyhat.springmvc.stripe.version>
     </properties>
 
     <dependencies>
@@ -30,6 +32,12 @@
             <groupId>com.sillyhat.springmvc</groupId>
             <artifactId>SillyHat-base</artifactId>
             <version>${com.sillyhat.springmvc.base.version}</version>
+        </dependency>
+        <!-- 引入Stripe代码组件 -->
+        <dependency>
+            <groupId>com.sillyhat.springmvc</groupId>
+            <artifactId>SillyHat-stripe</artifactId>
+            <version>${com.sillyhat.springmvc.stripe.version}</version>
         </dependency>
     </dependencies>
     <build>
