@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   http://www.springframework.org/schema/beans/spring-beans-4.3.xsd"
+       default-lazy-init="true">
+
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="contentType" value="text/html; charset=UTF-8"/>
+        <!--<property name="viewNames" value="*.ftl" />-->
+        <property name="suffix" value="${template.suffix}"/>
+        <!--<property name="suffix" value=""/>-->
+    </bean>
+
+    <!-- ******************************************************************************************** -->
+    <!-- 【配置freeMarker的模板信息】在view.render的时候需要得到template,通过getConfiguration().getTemplate来获得-->
+    <!-- getConfiguration()需要依赖一个FreeMarkerConfig的实现类{FreeMarkerConfigurer}，所以这个配置是这样的用法-->
+    <!-- ******************************************************************************************** -->
+    <bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <!-- templateLoaderPaths和 freemarker viewResolver中的prefix只能只定一个，要不然会报找不着ftl -->
+        <property name="templateLoaderPaths" value="${template.loader_path}"/>
+        <property name="freemarkerSettings">
+            <props>
+                <!--默认编码 -->
+                <prop key="defaultEncoding">${template.encoding}</prop>
+                <!-- URL编码使用的字符集 -->
+                <prop key="url_escaping_charset">${url_escaping_charset}</prop>
+                <!-- 模板所使用的语言环境选项 -->
+                <prop key="locale">${locale}</prop>
+                <!-- 每隔多少秒检查模板是否被更新 -->
+                <prop key="template_update_delay">${template.update_delay}</prop>
+                <!-- 设置标签类型 两种：[] 和 <>,[] 这种标记解析要快些 -->
+                <!-- angle_bracket/square_bracket= 尖括号/方括号 auto_detect(无效?) -->
+                <prop key="tag_syntax">square_bracket</prop>
+                <!-- 清除空白 -->
+                <prop key="whitespace_stripping">true</prop>
+                <!-- 处理变量中的null值，自动转为空字符串 -->
+                <prop key="classic_compatible">true</prop>
+                <!-- 数字格式化输出的格式 -->
+                <prop key="number_format">${template.number_format}</prop>
+                <!-- 布尔值格式化输出的格式 -->
+                <prop key="boolean_format">${template.boolean_format}</prop>
+                <!-- 日期时间格式化输出的格式 【srart】 -->
+                <prop key="datetime_format">${template.datetime_format}</prop>
+                <prop key="date_format">${template.date_format}</prop>
+                <prop key="time_format">${template.time_format}</prop>
+                <!-- 日期时间格式化输出的格式 【end】 -->
+                <!--让bean在freemarker模板中可以像java中一样使用 -->
+                <prop key="object_wrapper">freemarker.ext.beans.BeansWrapper</prop>
+            </props>
+        </property>
+        <property name="freemarkerVariables">
+            <map>
+                <entry key="systemName" value="${system.name}"/>
+                <entry key="systemVersion" value="${system.version}"/>
+                <entry key="systemDescription" value="${system.description}"/>
+                <entry key="systemShowPowered" value="${system.show_powered}"/>
+                <entry key="sillyhatImagePath" value="${images.path}"/>
+                <!-- 在TokenInterceptor#postHandle()方法做了处理-->
+                <!--<entry key="base" value="#{servletContext.contextPath}"/>-->
+                <entry key="locale" value="${locale}"/>
+                <!--<entry key="setting" value="#{T(com.aipanda.util.SettingUtils).get()}"/>-->
+
+                <!-- ************************用Java代码来实现自定义方法&指令****************************** -->
+                <!-- 自定义方法  Begin -->
+                <!--<entry key="abbreviate" value-ref="abbreviateMethod"/>-->
+                <!--<entry key="currency" value-ref="currencyMethod"/>-->
+                <!--<entry key="message" value-ref="messageMethod"/>-->
+                <!-- 自定义方法  End -->
+
+                <!-- 自定义指令  Begin -->
+                <!--<entry key="execute_time" value-ref="executeTimeDirective"/>-->
+                <!--<entry key="flash_message" value-ref="flashMessageDirective"/>-->
+                <!--<entry key="pagination" value-ref="paginationDirective"/>-->
+                <!--<entry key="seo" value-ref="seoDirective"/>-->
+                <!--<entry key="ad_position" value-ref="adPositionDirective"/>-->
+                <!--<entry key="member_attribute_list" value-ref="memberAttributeListDirective"/>-->
+                <!--<entry key="navigation_list" value-ref="navigationListDirective"/>-->
+                <!--<entry key="tag_list" value-ref="tagListDirective"/>-->
+                <!--<entry key="friend_link_list" value-ref="friendLinkListDirective"/>-->
+                <!--<entry key="brand_list" value-ref="brandListDirective"/>-->
+                <!--<entry key="article_list" value-ref="articleListDirective"/>-->
+                <!--<entry key="article_category_root_list" value-ref="articleCategoryRootListDirective"/>-->
+                <!--<entry key="article_category_parent_list" value-ref="articleCategoryParentListDirective"/>-->
+                <!--<entry key="article_category_children_list" value-ref="articleCategoryChildrenListDirective"/>-->
+                <!--<entry key="product_list" value-ref="productListDirective"/>-->
+                <!--<entry key="product_category_root_list" value-ref="productCategoryRootListDirective"/>-->
+                <!--<entry key="product_category_parent_list" value-ref="productCategoryParentListDirective"/>-->
+                <!--<entry key="product_category_children_list" value-ref="productCategoryChildrenListDirective"/>-->
+                <!--<entry key="review_list" value-ref="reviewListDirective"/>-->
+                <!--<entry key="consultation_list" value-ref="consultationListDirective"/>-->
+                <!--<entry key="promotion_list" value-ref="promotionListDirective"/>-->
+                <!-- 自定义指令  End -->
+                <!-- ********************************************************************************* -->
+            </map>
+        </property>
+    </bean>
+</beans>
