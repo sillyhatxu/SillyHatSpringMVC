@@ -9,6 +9,7 @@
     <modules>
         <module>SillyHat-webapp</module>
         <module>SillyHat-stripe</module>
+        <module>SillyHat-base</module>
     </modules>
     <name>SillyHatSpringMVC</name>
     <url>http://maven.apache.org</url>

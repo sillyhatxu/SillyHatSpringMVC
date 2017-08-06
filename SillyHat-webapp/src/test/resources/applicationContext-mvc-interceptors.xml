@@ -14,12 +14,12 @@
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/web/**"/>
             <mvc:exclude-mapping path="/swagger/**"/>
-            <bean id="tokenInterceptor" class="com.sillyhat.springmvc.core.interceptor.TokenInterceptor"/>
+            <bean id="tokenInterceptor" class="com.sillyhat.base.core.interceptor.TokenInterceptor"/>
         </mvc:interceptor>
 
         <mvc:interceptor>
             <mvc:mapping path="/admin/**"/>
-            <bean id="executeTimeInterceptor" class="com.sillyhat.springmvc.core.interceptor.ExecuteTimeInterceptor"/>
+            <bean id="executeTimeInterceptor" class="com.sillyhat.base.core.interceptor.ExecuteTimeInterceptor"/>
         </mvc:interceptor>
 
         <mvc:interceptor>

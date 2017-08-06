@@ -16,6 +16,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <com.sillyhat.springmvc.base.version>1.0</com.sillyhat.springmvc.base.version>
         <stripe.version>5.4.0</stripe.version>
     </properties>
 
@@ -26,6 +27,13 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <!-- 引入核心代码组件 -->
+        <dependency>
+            <groupId>com.sillyhat.project</groupId>
+            <artifactId>SillyHatProject-core</artifactId>
+            <version>${com.sillyhat.springmvc.base.version}</version>
+        </dependency>
+        <!-- 引入Stripe https://stripe.com/sg 代码组件 -->
         <dependency>
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
