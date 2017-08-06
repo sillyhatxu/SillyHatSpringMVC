@@ -5,13 +5,44 @@
          version="3.0">
     <display-name>SillyHatStripe</display-name>
 
-    <!-- Spring容器加载上下文配置文件的位置 -->
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>
-            classpath*:/applicationContext.xml
-        </param-value>
-    </context-param>
+    <!-- 设置Request和Response的字符编码的filter Begin -->
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <!-- 设置Request请求的字符集编码格式 -->
+            <param-name>encoding</param-name>
+            <param-value>utf-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <!-- true:强制Response字符集编码和Request请求的编码一致，false的话采用Response默认编码 -->
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <!-- 设置Request和Response的字符编码的filter End -->
+
+    <!-- Get请求的数据进行编码转换filter Begin -->
+    <filter>
+        <filter-name>encodingConvertFilter</filter-name>
+        <filter-class>com.sillyhat.springmvc.core.filter.EncodingConvertFilter</filter-class>
+        <init-param>
+            <param-name>fromEncoding</param-name>
+            <param-value>ISO-8859-1</param-value>
+        </init-param>
+        <init-param>
+            <param-name>toEncoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <!-- Get请求的数据进行编码转换filter End -->
+
+    <!-- 简化身份验证和授权filter Begin -->
+    <!--<filter>-->
+    <!--<filter-name>shiroFilter</filter-name>-->
+    <!--<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>-->
+    <!--</filter>-->
+    <!-- 简化身份验证和授权filter End -->
 
     <!-- 页面传输压缩过滤器 -->
     <filter>
@@ -37,6 +68,8 @@
         </init-param>
     </filter>
 
+    <!-- #################################分隔符 ############################################## -->
+
     <!-- ******************  页面缓存Filter  *****************-->
     <filter-mapping>
         <filter-name>compressingFilter</filter-name>
@@ -46,6 +79,45 @@
         <filter-name>compressingFilter</filter-name>
         <url-pattern>*.js</url-pattern>
     </filter-mapping>
+
+    <!-- #################################分隔符 ############################################## -->
+
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>encodingConvertFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- Spring容器加载上下文配置文件的位置 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath*:/applicationContext.xml
+        </param-value>
+    </context-param>
+
+    <!-- #################################分隔符 ############################################## -->
+    <!--
+    1.此监听器主要用于解决java.beans.Introspector导致的内存泄漏的问题
+    2.此监听器应该配置在web.xml中与Spring相关监听器中的第一个位置(也要在ContextLoaderListener的前面)
+    3.JDK中的java.beans.Introspector类的用途是发现Java类是否符合JavaBean规范,如果有的框架或程序用到了Introspector类,那么就会启用一个系统级别的缓存,此缓存会
+　    存放一些曾加载并分析过的JavaBean的引用。当Web服务器关闭时,由于此缓存中存放着这些JavaBean的引用,所以垃圾回收器无法回收Web容器中的JavaBean对象,最后导致
+     内存变大。而org.springframework.web.util.IntrospectorCleanupListener就是专门用来处理Introspector内存泄漏问题的辅助类。IntrospectorCleanupListener会在
+     Web服务器停止时清理Introspector缓存,使那些Javabean能被垃圾回收器正确回收。Spring自身不会出现这种问题，因为Spring在加载并分析完一个类之后会马上刷新
+     JavaBeans Introspector缓存,这就保证Spring中不会出现这种内存泄漏的问题。但有些程序和框架在使用了JavaBeans Introspector之后,没有进行清理工作(如Quartz,Struts),
+     最后导致内存泄漏
+    -->
+    <listener>
+        <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+    </listener>
+    <!-- 启动spring容器的监听器-->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
 
     <servlet>
         <servlet-name>springmvc</servlet-name>
@@ -60,8 +132,9 @@
 
     <servlet-mapping>
         <servlet-name>springmvc</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
+
 
     <!-- 设置session失效，单位:分 -->
     <session-config>
