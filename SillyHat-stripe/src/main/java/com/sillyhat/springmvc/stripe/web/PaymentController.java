@@ -1,13 +1,15 @@
 package com.sillyhat.springmvc.stripe.web;
 
 import com.sillyhat.base.dto.SillyHatAJAX;
+import com.sillyhat.springmvc.stripe.service.StripeService;
+import com.stripe.model.Charge;
+import com.stripe.model.EphemeralKey;
 import com.wordnik.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * LearningWordController
@@ -19,12 +21,44 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/payment")
 public class PaymentController {
 
-    @ApiOperation(value = "进入单词主界面", response = String.class, notes = "进入主界面")
-    @RequestMapping(value = "/learing-word/toLearningWord", method = {RequestMethod.GET})
-    public String toLearningWord() {
+    @Autowired
+    private StripeService stripeService;
 
-        return "/payment/wordLearnging";
+    @Value("${stripe.api.key}")
+    private String STRIPE_API_KEY;
+
+//    @ResponseBody
+//    @ApiOperation(value = "获取Secret key", response = SillyHatAJAX.class, notes = "获取Secret key")
+//    @RequestMapping(value = "/ephemeral_keys/{customer}", method = {RequestMethod.POST})
+//    public SillyHatAJAX getStripeSecretKey(@PathVariable String customer) {
+//        EphemeralKey ephemeralKey = stripeService.getEphemeralKey(customer);
+//        return new SillyHatAJAX(ephemeralKey);
+//    }
+
+    @ResponseBody
+    @ApiOperation(value = "获取Secret key", response = SillyHatAJAX.class, notes = "获取Secret key")
+    @RequestMapping(value = "/ephemeral_keys", method = {RequestMethod.POST})
+    public SillyHatAJAX getStripeSecretKey(@RequestParam("customer") String customer) {
+        EphemeralKey ephemeralKey = stripeService.getEphemeralKey(customer);
+        return new SillyHatAJAX(ephemeralKey);
     }
+
+    @ResponseBody
+    @ApiOperation(value = "创建一笔支付订单", response = SillyHatAJAX.class, notes = "创建一笔支付订单")
+    @RequestMapping(value = "/createdPayment", method = {RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
+    public SillyHatAJAX createdPayment(@RequestBody Charge charge) {
+        stripeService.createdPayment(null);
+        return new SillyHatAJAX(true);
+    }
+
+    @ResponseBody
+    @ApiOperation(value = "创建一笔预授权支付订单", response = SillyHatAJAX.class, notes = "创建一笔预授权支付订单")
+    @RequestMapping(value = "/createdCapturePayment", method = {RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
+    public SillyHatAJAX createdCapturePayment(@RequestBody Charge charge) {
+        stripeService.createdCapturePayment(null);
+        return new SillyHatAJAX(true);
+    }
+
 
     @ResponseBody
     @ApiOperation(value = "后台管理-系统管理-保存用户", response = String.class, notes = "后台管理-系统管理-保存用户")

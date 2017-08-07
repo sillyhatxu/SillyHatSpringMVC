@@ -6,7 +6,8 @@ public class Constants {
 
     public static final String SILLYHAT_AJAX_SUCCESS_MSG = "Success";
 
-
+    public static final boolean IS_CAPTURED_YES = true;
+    public static final boolean IS_CAPTURED_NO = false;
 //    int SC_CONTINUE = 100;
 //    int SC_SWITCHING_PROTOCOLS = 101;
 //    int SC_OK = 200;

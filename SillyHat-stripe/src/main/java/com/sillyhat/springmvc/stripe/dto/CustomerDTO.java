@@ -33,12 +33,12 @@ public class CustomerDTO implements Serializable {
      * it solely takes into account amounts that have yet to be successfully applied to any invoice.
      * This balance is only taken into account for recurring billing purposes (i.e., subscriptions, invoices, invoice items).
      */
-    private Integer account_balance;
+    private Integer accountBalance;
 
     /**
      * The customer’s VAT identification number.
      */
-    private String business_vat_id;
+    private String businessVatId;
 
     /**
      * Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -54,7 +54,7 @@ public class CustomerDTO implements Serializable {
     /**
      * ID of the default source attached to this customer.
      */
-    private String default_source;
+    private String defaultSource;
 
     /**
      * Whether or not the latest charge for the customer’s latest invoice has failed.
@@ -95,7 +95,7 @@ public class CustomerDTO implements Serializable {
     /**
      * The customer’s payment sources, if any.
      */
-    private List sources;
+    private List<SourcesDTO> sources;
 
     /**
      * The customer’s current subscriptions, if any.
@@ -118,20 +118,20 @@ public class CustomerDTO implements Serializable {
         this.object = object;
     }
 
-    public Integer getAccount_balance() {
-        return account_balance;
+    public Integer getAccountBalance() {
+        return accountBalance;
     }
 
-    public void setAccount_balance(Integer account_balance) {
-        this.account_balance = account_balance;
+    public void setAccountBalance(Integer accountBalance) {
+        this.accountBalance = accountBalance;
     }
 
-    public String getBusiness_vat_id() {
-        return business_vat_id;
+    public String getBusinessVatId() {
+        return businessVatId;
     }
 
-    public void setBusiness_vat_id(String business_vat_id) {
-        this.business_vat_id = business_vat_id;
+    public void setBusinessVatId(String businessVatId) {
+        this.businessVatId = businessVatId;
     }
 
     public Date getCreated() {
@@ -150,12 +150,12 @@ public class CustomerDTO implements Serializable {
         this.currency = currency;
     }
 
-    public String getDefault_source() {
-        return default_source;
+    public String getDefaultSource() {
+        return defaultSource;
     }
 
-    public void setDefault_source(String default_source) {
-        this.default_source = default_source;
+    public void setDefaultSource(String defaultSource) {
+        this.defaultSource = defaultSource;
     }
 
     public boolean isDelinquent() {
@@ -214,11 +214,11 @@ public class CustomerDTO implements Serializable {
         this.shipping = shipping;
     }
 
-    public List getSources() {
+    public List<SourcesDTO> getSources() {
         return sources;
     }
 
-    public void setSources(List sources) {
+    public void setSources(List<SourcesDTO> sources) {
         this.sources = sources;
     }
 

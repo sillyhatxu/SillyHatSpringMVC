@@ -1,8 +1,12 @@
 package com.sillyhat.springmvc.stripe.service;
 
 import com.sillyhat.springmvc.stripe.dto.CustomerDTO;
+import com.sillyhat.springmvc.stripe.dto.PaymentDTO;
 import com.stripe.model.Customer;
+import com.stripe.model.EphemeralKey;
 import com.stripe.net.RequestOptions;
+
+import java.util.Map;
 
 /**
  * StripeService
@@ -13,11 +17,46 @@ import com.stripe.net.RequestOptions;
 public interface StripeService {
 
     /**
+     * 为客户端提供访问KEY值
+     * @param customerId
+     * @return
+     */
+    public EphemeralKey getEphemeralKey(String customerId);
+
+    /**
      * 得到Stripe秘钥
      * @return
      */
     public RequestOptions getStripeRequestOptions();
 
+    /**
+     * 创建支付申请
+     * @param paymentDTO
+     * @return
+     */
+    public Map<String,Object> createdPayment(PaymentDTO paymentDTO);
+
+    /**
+     * 创建预授权支付申请
+     * @param paymentDTO
+     * @return
+     */
+    public Map<String,Object> createdCapturePayment(PaymentDTO paymentDTO);
+
+    /**
+     * 确认预授权支付款
+     * @param paymentId
+     * @param amount
+     * @return
+     */
+    public Map<String,Object> confirmCapturePayment(String paymentId,Long amount);
+
+    /**
+     * 创建customer
+     * @param dto
+     * @return
+     */
+    public Map<String,Object> createdCustomer(CustomerDTO dto);
     /**
      * 根据ID查询客户信息
      * @param id
