@@ -23,7 +23,7 @@ public class CustomerDTO implements Serializable {
     /**
      * String representing the object’s type. Objects of the same type share the same value.
      */
-    private String object;
+//    private String object;
 
     /**
      * Current balance, if any, being stored on the customer’s account.
@@ -49,7 +49,7 @@ public class CustomerDTO implements Serializable {
      * Three-letter ISO code for the currency the customer can be charged in for recurring billing purposes.
      * https://stripe.com/docs/currencies
      */
-    private String currency;
+//    private String currency;
 
     /**
      * ID of the default source attached to this customer.
@@ -95,7 +95,7 @@ public class CustomerDTO implements Serializable {
     /**
      * The customer’s payment sources, if any.
      */
-    private List<SourcesDTO> sources;
+    private SourcesDTO sources;
 
     /**
      * The customer’s current subscriptions, if any.
@@ -110,13 +110,13 @@ public class CustomerDTO implements Serializable {
         this.id = id;
     }
 
-    public String getObject() {
-        return object;
-    }
-
-    public void setObject(String object) {
-        this.object = object;
-    }
+//    public String getObject() {
+//        return object;
+//    }
+//
+//    public void setObject(String object) {
+//        this.object = object;
+//    }
 
     public Integer getAccountBalance() {
         return accountBalance;
@@ -142,13 +142,13 @@ public class CustomerDTO implements Serializable {
         this.created = created;
     }
 
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
+//    public String getCurrency() {
+//        return currency;
+//    }
+//
+//    public void setCurrency(String currency) {
+//        this.currency = currency;
+//    }
 
     public String getDefaultSource() {
         return defaultSource;
@@ -214,11 +214,11 @@ public class CustomerDTO implements Serializable {
         this.shipping = shipping;
     }
 
-    public List<SourcesDTO> getSources() {
+    public SourcesDTO getSources() {
         return sources;
     }
 
-    public void setSources(List<SourcesDTO> sources) {
+    public void setSources(SourcesDTO sources) {
         this.sources = sources;
     }
 

@@ -1,4 +1,4 @@
-package com.sillyhat.test;
+package com.sillyhat.stripe.business;
 
 import com.sillyhat.base.utils.UUIDUtils;
 import com.stripe.Stripe;
@@ -7,6 +7,7 @@ import com.stripe.model.*;
 import com.stripe.net.RequestOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +34,9 @@ public class StripeTest {
 //        createdCustomer();//Create a customer创建客户
 //        queryCustomerByID("cus_B8ZiL9YoFFduqA");//查询客户
 //        queryCustomerByLimit(20);//查询客户信息
-        updateCustomerByID("cus_B8ZiL9YoFFduqA");//修改客户信息
-        deleteCustomerByID("");
+        updateCustomerByID("cus_BAVT2u8JTiXNV0");//修改客户信息
+//        deleteCustomerByID("");
+//        createdCardToken();
     }
 
 
@@ -48,14 +50,71 @@ public class StripeTest {
         createdPayment(uuid);
     }
 
+    public static String createdCardToken(){
+        try {
+            Stripe.apiKey = "sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv";
+
+            Map<String, Object> tokenParams = new HashMap<String, Object>();
+            Map<String, Object> cardParams = new HashMap<String, Object>();
+            cardParams.put("number", "4242424242424242");
+            cardParams.put("exp_month", 8);
+            cardParams.put("exp_year", 2018);
+            cardParams.put("cvc", "314");
+            tokenParams.put("card", cardParams);
+
+            Token token = Token.create(tokenParams);
+//            Stripe.apiKey = "sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv";
+//            Map<String, Object> tokenParams = new HashMap<String, Object>();
+//            Map<String, Object> cardParams = new HashMap<String, Object>();
+//            cardParams.put("number", "6011111111111117");
+//            cardParams.put("exp_month", 8);
+//            cardParams.put("exp_year", 2018);
+//            cardParams.put("cvc", "314");
+//            tokenParams.put("card", cardParams);
+//            Token token = Token.create(tokenParams);
+            logger.info("token id ----> {}",token.getId());
+            return token.getId();
+        } catch (CardException e) {
+            // Since it's a decline, CardException will be caught
+            logger.info("Status is: " + e.getCode());
+            logger.info("Message is: " + e.getMessage());
+        } catch (RateLimitException e) {
+            logger.error("Too many requests made to the API too quickly.",e);
+            // Too many requests made to the API too quickly
+        } catch (InvalidRequestException e) {
+            logger.error("Invalid parameters were supplied to Stripe's API.",e);
+            // Invalid parameters were supplied to Stripe's API
+        } catch (AuthenticationException e) {
+            logger.error("Authentication with Stripe's API failed.",e);
+            // Authentication with Stripe's API failed
+            // (maybe you changed API keys recently)
+        } catch (APIConnectionException e) {
+            logger.error("Network communication with Stripe failed.",e);
+            // Network communication with Stripe failed
+        } catch (StripeException e) {
+            logger.error("Display a very generic error to the user, and maybe send.",e);
+            // Display a very generic error to the user, and maybe send
+            // yourself an email
+        } catch (Exception e) {
+            logger.error("Something else happened, completely unrelated to Stripe.",e);
+            // Something else happened, completely unrelated to Stripe
+        }
+        return null;
+    }
+
     public static void createdCustomer(){
         try {
             Stripe.apiKey = "sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv";
             Map<String, Object> customerParams = new HashMap<String, Object>();
-            customerParams.put("description", "Customer for ava.robinson@example.com");
-            customerParams.put("source", "tok_visa");
+            customerParams.put("description", "XUSHIKUAN TEST-1");
+//            customerParams.put("object", "customer");
+//            customerParams.put("currency", "SGD");
+//            customerParams.put("source", createdCardToken());
             // ^ obtained with Stripe.js
             Customer customer = Customer.create(customerParams);
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("source", createdCardToken());
+            customer.getSources().create(params);
             logger.info("--------------------------------------");
             logger.info("CustomerId : {} ",customer.getId());
             logger.info("BusinessVatId : {} ",customer.getBusinessVatId());
@@ -126,7 +185,7 @@ public class StripeTest {
             Stripe.apiKey = "sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv";
             Customer cu = Customer.retrieve(customerId);
             Map<String, Object> updateParams = new HashMap<String, Object>();
-            updateParams.put("description", "Customer for anthony.wilson@example.com");
+            updateParams.put("source", "tok_1AoAvaAuC6WOU0qqzwt16JtA");
             Customer customer = cu.update(updateParams);
             logger.info("--------------------------------------");
             logger.info("CustomerId : {} ",customer.getId());

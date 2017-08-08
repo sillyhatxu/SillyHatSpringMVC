@@ -1,5 +1,6 @@
 package com.sillyhat.springmvc.stripe.service;
 
+import com.sillyhat.springmvc.stripe.dto.CardsDTO;
 import com.sillyhat.springmvc.stripe.dto.CustomerDTO;
 import com.sillyhat.springmvc.stripe.dto.PaymentDTO;
 import com.stripe.model.Customer;
@@ -57,6 +58,21 @@ public interface StripeService {
      * @return
      */
     public Map<String,Object> createdCustomer(CustomerDTO dto);
+
+    /**
+     * 修改customer
+     * @param dto
+     * @return
+     */
+    public Map<String,Object> updatedCustomer(CustomerDTO dto);
+
+    /**
+     * 创建token id
+     * @param dto
+     * @return
+     */
+    public String createdCardToken(CardsDTO dto);
+
     /**
      * 根据ID查询客户信息
      * @param id
