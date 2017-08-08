@@ -84,7 +84,7 @@ public class StripeServiceImpl implements StripeService{
         try {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("amount",paymentDTO.getAmount());
-//            params.put("currency", "sgd");
+            params.put("currency", "sgd");
 //            params.put("description", "test capture");
             params.put("source", paymentDTO.getSource());
 //            Charge charge = Charge.create(chargeParams,getStripeRequestOptions());

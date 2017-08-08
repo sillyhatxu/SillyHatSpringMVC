@@ -61,6 +61,7 @@ public class PaymentController {
     @RequestMapping(value = "/createdPayment", method = {RequestMethod.POST})
     public SillyHatAJAX createdPayment(@RequestParam("source") String source,@RequestParam("amount") String amount,@RequestParam("mozatId") String mozatId) {
 //    public SillyHatAJAX createdPayment(@PathVariable String params) {
+        logger.info("source : {},amount : {} , mozatId: {}",source,amount,mozatId);
         try{
             UserDTO userDTO = userService.getUserByMozatId(mozatId);
             if(userDTO == null){
