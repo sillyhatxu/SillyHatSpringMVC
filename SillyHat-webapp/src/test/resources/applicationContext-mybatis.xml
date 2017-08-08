@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd"
+       default-lazy-init="true">
+
+    <!-- 让spring管理sqlsessionfactory 使用mybatis和spring整合包中的 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!--
+            加载mybatis的全局配置文件，它是用来指定MyBatis的XML配置文件路径的。如果基本的MyBatis配置需要改变,
+            那么这就是一个需要它的地方。通常这会是<settings>或<typeAliases>的部分
+         -->
+        <property name="configLocation" value="classpath:mybatis-config.xml" />
+        <!--用来指定MyBatis的XML映射器文件的位置 -->
+        <property name="mapperLocations" value="classpath*:com/sillyhat/**/mapper/*Mapper.xml" />
+    </bean>
+    <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--basePackage指定要扫描的包，在此包之下的映射器都会被搜索到。可指定多个包，包与包之间用逗号或分号分隔-->
+        <property name="basePackage" value="com.sillyhat.**.mapper" />
+        <!--无需指定引用SqlSessionFactory，因为MapperScannerConfigurer在创建映射器时会通过自动装配的方式来引用。 -->
+        <!--<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>-->
+    </bean>
+</beans>

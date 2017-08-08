@@ -115,7 +115,7 @@ public class PaymentDTO {
      * the extra info helps prevent fraud.
      * 资金来源，如果customer不为空，则此资金来源卡号要与customer绑定
      */
-    private Map<String,Object> source;
+    private String source;
 
     /**
      * An arbitrary string to be displayed on your customer's credit card statement.
@@ -228,11 +228,11 @@ public class PaymentDTO {
         this.customer = customer;
     }
 
-    public Map<String, Object> getSource() {
+    public String getSource() {
         return source;
     }
 
-    public void setSource(Map<String, Object> source) {
+    public void setSource(String source) {
         this.source = source;
     }
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sillyhat.springmvc.stripe.mapper.UserMapper">
+
+    <insert id="insertUser" keyProperty="id" useGeneratedKeys="true" parameterType="com.sillyhat.springmvc.stripe.dto.UserDTO">
+        insert into T_BASE_USER(MOZAT_ID,CUSTOMER_ID) values (#{mozatId},#{customerId})
+    </insert>
+
+    <select id="getUserByMozatId" parameterType="string" resultType="com.sillyhat.springmvc.stripe.dto.UserDTO">
+        select ID as id,MOZAT_ID as mozatId,CUSTOMER_ID as customerId from T_BASE_USER where MOZAT_ID = #{mozatId}
+    </select>
+
+    <select id="queryUserCardList" resultType="com.sillyhat.springmvc.stripe.dto.UserCardDTO">
+        select
+            ID as id,
+            USER_ID as userId,
+            TOKEN_ID as tokenId,
+            CARD_ID as cardId,
+            CARD_NUMBER as cardNumber,
+            CARD_ENCRYPT as cardEncrypt
+        from T_BASE_USER_CARD
+        where USER_ID = #{userId}
+    </select>
+
+    <insert id="addUserCard" keyProperty="id" useGeneratedKeys="true" parameterType="com.sillyhat.springmvc.stripe.dto.UserCardDTO">
+        insert into T_BASE_USER_CARD(USER_ID,TOKEN_ID,CARD_ID,CARD_NUMBER,CARD_ENCRYPT)
+        values (#{userId},#{tokenId},#{cardId},#{cardNumber},#{cardEncrypt})
+    </insert>
+
+    <update id="updateUserCard" parameterType="com.sillyhat.springmvc.stripe.dto.UserCardDTO">
+        update T_BASE_USER_CARD
+        set
+            USER_ID = #{userId},
+            TOKEN_ID = #{tokenId},
+            CARD_ID = #{cardId},
+            CARD_NUMBER = #{cardNumber},
+            CARD_ENCRYPT = #{cardEncrypt}
+        where ID = #{id}
+    </update>
+
+</mapper>

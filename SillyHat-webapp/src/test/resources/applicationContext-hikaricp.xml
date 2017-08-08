@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.3.xsd"
+       default-lazy-init="true">
+
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+        <property name="driverClassName" value="${hikaricp.jdbc.driverClassName}"/>
+        <property name="jdbcUrl" value="${hikaricp.url}"/>
+        <property name="username" value="${hikaricp.username}"/>
+        <property name="password" value="${hikaricp.password}"/>
+        <!---->
+        <property name="connectionTestQuery" value="${hikaricp.connectionTestQuery}"/>
+        <!--等待连接池时间等待10秒，如果超过这个时间没有连接可用,将会抛出SQLException-->
+        <property name="connectionTimeout" value="${hikaricp.connectionTimeout}"/>
+        <property name="idleTimeout" value="${hikaricp.idleTimeout}"/>
+        <property name="maxLifetime" value="${hikaricp.maxLifetime}"/>
+        <property name="maximumPoolSize" value="${hikaricp.maximumPoolSize}"/>
+    </bean>
+</beans>

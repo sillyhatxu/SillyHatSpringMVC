@@ -57,14 +57,14 @@ public interface StripeService {
      * @param dto
      * @return
      */
-    public Map<String,Object> createdCustomer(CustomerDTO dto);
+    public Customer createdCustomer(CustomerDTO dto);
 
     /**
      * 修改customer
      * @param dto
      * @return
      */
-    public Map<String,Object> updatedCustomer(CustomerDTO dto);
+    public Customer updatedCustomer(CustomerDTO dto);
 
     /**
      * 创建token id

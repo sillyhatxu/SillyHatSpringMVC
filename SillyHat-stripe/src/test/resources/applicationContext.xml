@@ -9,7 +9,7 @@
        default-lazy-init="true">
 
     <!--  properties参数引入xml，两种方式 Begin-->
-    <context:property-placeholder location="classpath*:system.properties,classpath*:stripe.properties"
+    <context:property-placeholder location="classpath*:hikaricp.properties,classpath*:system.properties,classpath*:stripe.properties"
             ignore-resource-not-found="true" ignore-unresolvable="true"/>
 
     <!-- 扫描 base-package包及其子包下的所有标注了的@Component,@Service,@Reposity等注解的类,并把他们注册成Bean-->
@@ -27,10 +27,10 @@
     <bean class="com.mangofactory.swagger.configuration.SpringSwaggerConfig" />
 
     <!-- 引用各模块的spring配置文件 -->
-    <!--<import resource="applicationContext-hikaricp.xml"/>-->
+    <import resource="applicationContext-hikaricp.xml"/>
     <!--<import resource="applicationContext-mail-${system.env}.xml"/>-->
     <!--<import resource="applicationContext-cache.xml"/>-->
-    <!--<import resource="applicationContext-mybatis.xml"/>-->
+    <import resource="applicationContext-mybatis.xml"/>
     <!-- Activiti -->
     <!--<import resource="applicationContext-activiti.xml"/>-->
     <!-- 事务管理 -->

@@ -84,9 +84,9 @@ public class StripeServiceImpl implements StripeService{
         try {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("amount",paymentDTO.getAmount());
-            params.put("currency", "sgd");
-            params.put("description", "test capture");
-            params.put("source", "tok_mastercard");
+//            params.put("currency", "sgd");
+//            params.put("description", "test capture");
+            params.put("source", paymentDTO.getSource());
 //            Charge charge = Charge.create(chargeParams,getStripeRequestOptions());
             Charge.create(params,getStripeRequestOptions());
         } catch (CardException e) {
@@ -162,15 +162,16 @@ public class StripeServiceImpl implements StripeService{
     }
 
     @Override
-    public Map<String, Object> createdCustomer(CustomerDTO dto) {
-        Map<String, Object> result = new HashMap<String, Object>();
+    public Customer createdCustomer(CustomerDTO dto) {
+//        Map<String, Object> result = new HashMap<String, Object>();
+        Customer customer = null;
         try {
             Map<String, Object> customerParams = new HashMap<String, Object>();
 //            customerParams.put("object",dto.getObject());
 //            customerParams.put("currency",dto.getCurrency());
             customerParams.put("email",dto.getEmail());
             customerParams.put("description", dto.getDescription());
-            Customer customer = Customer.create(customerParams,getStripeRequestOptions());
+            customer = Customer.create(customerParams,getStripeRequestOptions());
             if(dto.getSources() != null){
                 Map<String, Object> sources = new HashMap<String, Object>();
                 SourcesDTO sourcesDTO = dto.getSources();
@@ -186,6 +187,7 @@ public class StripeServiceImpl implements StripeService{
                 }
                 customerParams.put("sources",sources);
             }
+
         } catch (CardException e) {
             // Since it's a decline, CardException will be caught
             logger.info("Status is: " + e.getCode());
@@ -211,14 +213,15 @@ public class StripeServiceImpl implements StripeService{
             logger.error("Something else happened, completely unrelated to Stripe.",e);
             // Something else happened, completely unrelated to Stripe
         }
-        return result;
+        return customer;
     }
 
     @Override
-    public Map<String, Object> updatedCustomer(CustomerDTO dto) {
-        Map<String, Object> result = new HashMap<String, Object>();
+    public Customer updatedCustomer(CustomerDTO dto) {
+//        Map<String, Object> result = new HashMap<String, Object>();
+        Customer customer = null;
         try {
-            Customer customer = Customer.retrieve(dto.getId(),getStripeRequestOptions());
+            customer = Customer.retrieve(dto.getId(),getStripeRequestOptions());
             Map<String, Object> customerParams = new HashMap<String, Object>();
             customerParams.put("email",dto.getEmail());
             customerParams.put("description", dto.getDescription());
@@ -259,7 +262,7 @@ public class StripeServiceImpl implements StripeService{
             logger.error("Something else happened, completely unrelated to Stripe.",e);
             // Something else happened, completely unrelated to Stripe
         }
-        return result;
+        return customer;
     }
 
     @Override

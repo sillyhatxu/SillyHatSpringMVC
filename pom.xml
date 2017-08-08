@@ -28,6 +28,11 @@
         <common.beanutils.version>1.9.3</common.beanutils.version>
         <freemarker.version>2.3.23</freemarker.version>
         <servlet.version>3.1.0</servlet.version>
+        <mybatis.version>3.2.6</mybatis.version>
+        <mybatis.spring.version>1.2.5</mybatis.spring.version>
+        <hikaricp.version>2.6.0</hikaricp.version>
+        <mysql.version>5.1.37</mysql.version>
+        <cglib.version>3.2.5</cglib.version>
     </properties>
 
     <dependencies>
@@ -129,6 +134,45 @@
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
+        <!-- mybatis核心包 -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>${mybatis.version}</version>
+        </dependency>
+        <!-- mybatis/spring包 -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>${mybatis.spring.version}</version>
+        </dependency>
+
+        <!-- HikariCP连接池 -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikaricp.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun</groupId>
+                    <artifactId>tools</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- mysql 驱动包-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+        <!--CGLIB代理 -->
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>${cglib.version}</version>
+        </dependency>
+
         <!--springfox依赖 -->
         <dependency>
             <groupId>com.mangofactory</groupId>
