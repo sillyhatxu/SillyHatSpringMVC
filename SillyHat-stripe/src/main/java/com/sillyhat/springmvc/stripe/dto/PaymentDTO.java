@@ -69,7 +69,7 @@ public class PaymentDTO {
      * Automatically set if you use the destination parameter.
      * See the Connect documentation for details.
      */
-    private String on_behalf_of;
+    private String onBehalfOf;
 
     /**
      * Set of key/value pairs that you can attach to an object.
@@ -188,12 +188,12 @@ public class PaymentDTO {
         this.transferGroup = transferGroup;
     }
 
-    public String getOn_behalf_of() {
-        return on_behalf_of;
+    public String getOnBehalfOf() {
+        return onBehalfOf;
     }
 
-    public void setOn_behalf_of(String on_behalf_of) {
-        this.on_behalf_of = on_behalf_of;
+    public void setOnBehalfOf(String onBehalfOf) {
+        this.onBehalfOf = onBehalfOf;
     }
 
     public Map<String, Object> getMetadata() {
@@ -254,7 +254,7 @@ public class PaymentDTO {
                 ", description='" + description + '\'' +
                 ", destination=" + destination +
                 ", transferGroup='" + transferGroup + '\'' +
-                ", on_behalf_of='" + on_behalf_of + '\'' +
+                ", onBehalfOf='" + onBehalfOf + '\'' +
                 ", metadata=" + metadata +
                 ", receiptEmail='" + receiptEmail + '\'' +
                 ", shipping=" + shipping +

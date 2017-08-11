@@ -38,9 +38,9 @@ public interface StripeService {
      * @param amount
      * @return
      */
-//    public Map<String,Object> createdPayment(PaymentDTO paymentDTO);
     public Map<String,Object> createdPayment(String customer,String cardId,Long amount);
 
+    public Map<String,Object> createdPayment(PaymentDTO paymentDTO);
     /**
      * This request accepts only the description, metadata, receipt_email, fraud_details, and shipping as arguments.
      * 修改付款信息

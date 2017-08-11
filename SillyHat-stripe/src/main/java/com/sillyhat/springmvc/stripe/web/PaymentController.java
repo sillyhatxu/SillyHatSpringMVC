@@ -95,6 +95,15 @@ public class PaymentController {
     }
 
     @ResponseBody
+    @ApiOperation(value = "创建一笔支付订单", response = SillyHatAJAX.class, notes = "创建一笔支付订单")
+    @RequestMapping(value = "/createdPaymentDetail", method = {RequestMethod.POST})
+    public SillyHatAJAX createdPayment(@RequestBody PaymentDTO dto) {
+        logger.info("PaymentDTO : {}; ",dto.toString());
+        Map<String,Object> result = stripeService.createdPayment(dto);
+        return new SillyHatAJAX(result);
+    }
+
+    @ResponseBody
     @ApiOperation(value = "修改一笔支付订单", response = SillyHatAJAX.class, notes = "This request accepts only the description, metadata, receipt_email, fraud_details, and shipping as arguments.")
     @RequestMapping(value = "/updatedPayment", method = {RequestMethod.POST})
     public SillyHatAJAX updatedPayment(@RequestParam("chargeId") String chargeId, @RequestParam("receiptEmail")String receiptEmail) {

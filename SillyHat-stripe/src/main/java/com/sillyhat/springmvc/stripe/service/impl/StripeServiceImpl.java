@@ -1,10 +1,7 @@
 package com.sillyhat.springmvc.stripe.service.impl;
 
 import com.sillyhat.base.utils.Constants;
-import com.sillyhat.springmvc.stripe.dto.CardsDTO;
-import com.sillyhat.springmvc.stripe.dto.CustomerDTO;
-import com.sillyhat.springmvc.stripe.dto.SourcesDTO;
-import com.sillyhat.springmvc.stripe.dto.UserCardDTO;
+import com.sillyhat.springmvc.stripe.dto.*;
 import com.sillyhat.springmvc.stripe.service.StripeService;
 import com.sillyhat.springmvc.stripe.service.UserService;
 import com.stripe.exception.*;
@@ -84,7 +81,64 @@ public class StripeServiceImpl implements StripeService{
     @Override
 //    public Map<String, Object> createdPayment(PaymentDTO paymentDTO) {
     public Map<String, Object> createdPayment(String customer,String cardId,Long amount) {
-        return createdCapturePayment(customer,cardId,amount,Constants.IS_CAPTURED_YES);//false 预收款
+        return createdPayment(customer,cardId,amount,Constants.IS_CAPTURED_YES);//false 预收款
+    }
+
+    @Override
+    public Map<String, Object> createdPayment(PaymentDTO paymentDTO) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("amount",paymentDTO.getAmount());
+            params.put("currency", "sgd");
+            params.put("source", paymentDTO.getSource());
+            params.put("customer", paymentDTO.getCustomer());
+//            if(paymentDTO.getApplicationFee() != null)
+//                params.put("application_fee", paymentDTO.getApplicationFee());//直接向另一个账户收取费用
+            if(StringUtils.isNotEmpty(paymentDTO.getDescription()))
+                params.put("description", paymentDTO.getDescription());
+//            params.put("destination", paymentDTO.get);//直接转账号
+            if(StringUtils.isNotEmpty(paymentDTO.getTransferGroup()))
+                params.put("transfer_group", paymentDTO.getTransferGroup());//将多个订单一次性付款
+            if(StringUtils.isNotEmpty(paymentDTO.getOnBehalfOf()))
+                params.put("on_behalf_of", paymentDTO.getOnBehalfOf());
+//            if(StringUtils.isNotEmpty(paymentDTO.getDescription()))
+//                params.put("metadata", paymentDTO.get);
+            if(StringUtils.isNotEmpty(paymentDTO.getReceiptEmail()))
+                params.put("receipt_email", paymentDTO.getReceiptEmail());
+//            if(StringUtils.isNotEmpty(paymentDTO.getDescription()))
+//                params.put("shipping", paymentDTO.get);
+            if(StringUtils.isNotEmpty(paymentDTO.getStatementDescriptor()))
+                params.put("statement_descriptor", paymentDTO.getStatementDescriptor());//信用卡账单显示的字符串，长度22，不可录入<>"'
+            logger.info("Charge.create ----> {}",params);
+            Charge charge = Charge.create(params,getStripeRequestOptions());
+            result.put("charge",charge);
+        } catch (CardException e) {
+            // Since it's a decline, CardException will be caught
+            logger.error("Status is: " + e.getCode());
+            logger.error("Message is: " + e.getMessage());
+        } catch (RateLimitException e) {
+            logger.error("Too many requests made to the API too quickly.",e);
+            // Too many requests made to the API too quickly
+        } catch (InvalidRequestException e) {
+            logger.error("Invalid parameters were supplied to Stripe's API.",e);
+            // Invalid parameters were supplied to Stripe's API
+        } catch (AuthenticationException e) {
+            logger.error("Authentication with Stripe's API failed.",e);
+            // Authentication with Stripe's API failed
+            // (maybe you changed API keys recently)
+        } catch (APIConnectionException e) {
+            logger.error("Network communication with Stripe failed.",e);
+            // Network communication with Stripe failed
+        } catch (StripeException e) {
+            logger.error("Display a very generic error to the user, and maybe send.",e);
+            // Display a very generic error to the user, and maybe send
+            // yourself an email
+        } catch (Exception e) {
+            logger.error("Something else happened, completely unrelated to Stripe.",e);
+            // Something else happened, completely unrelated to Stripe
+        }
+        return result;
     }
 
     @Override
@@ -165,7 +219,7 @@ public class StripeServiceImpl implements StripeService{
         return result;
     }
 
-    private Map<String, Object> createdCapturePayment(String customer,String cardId,Long amount,boolean capture){
+    private Map<String, Object> createdPayment(String customer,String cardId,Long amount,boolean capture){
         Map<String, Object> result = new HashMap<String, Object>();
         try {
             Map<String, Object> params = new HashMap<String, Object>();
@@ -208,7 +262,7 @@ public class StripeServiceImpl implements StripeService{
 
     @Override
     public Map<String, Object> createdCapturePayment(String customer,String cardId,Long amount) {
-        return createdCapturePayment(customer,cardId,amount,Constants.IS_CAPTURED_NO);//false 预收款
+        return createdPayment(customer,cardId,amount,Constants.IS_CAPTURED_NO);//false 预收款
     }
 
     @Override
