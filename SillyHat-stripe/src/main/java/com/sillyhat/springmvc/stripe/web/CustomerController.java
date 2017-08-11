@@ -6,12 +6,17 @@ import com.sillyhat.springmvc.stripe.dto.UserCardDTO;
 import com.sillyhat.springmvc.stripe.dto.UserDTO;
 import com.sillyhat.springmvc.stripe.service.StripeService;
 import com.sillyhat.springmvc.stripe.service.UserService;
+import com.sillyhat.springmvc.stripe.utils.HttpRequestUtils;
+import com.sillyhat.springmvc.stripe.utils.JsonUtils;
 import com.stripe.model.Customer;
+import com.wordnik.swagger.annotations.ApiImplicitParam;
+import com.wordnik.swagger.annotations.ApiImplicitParams;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -38,9 +43,18 @@ public class CustomerController {
     @Autowired
     private UserService userService;
 
+    @Value("${onemap.url}")
+    private String URL;
+    @Value("${onemap.params.begin}")
+    private String begin;
+    @Value("${onemap.params.end}")
+    private String end;
 
     @ResponseBody
     @ApiOperation(value = "根据mozatId查询用户卡片列表", response = SillyHatAJAX.class, notes = "根据mozatId查询用户卡片列表,如未绑定卡片skipBoundCard=true,否则skipBoundCard=false,并返回cardList")
+//    @ApiImplicitParams({
+//        @ApiImplicitParam(name = "mozatId", value = "客户身份唯一性标识号", required = true, dataType = "string", paramType = "header")
+//    })
     @RequestMapping(value = "/queryUserCardByMozatId/{mozatId}", method = {RequestMethod.GET,RequestMethod.POST})
     public SillyHatAJAX queryUserCardByMozatId(@PathVariable String mozatId) {
         Map<String,Object> result = new HashMap<String,Object>();
@@ -68,6 +82,10 @@ public class CustomerController {
     @ResponseBody
     @ApiOperation(value = "customer绑定银行卡", response = SillyHatAJAX.class, notes = "xxxxxx")
     @RequestMapping(value = "/boundCard/{mozatId}/source/{source}", method = {RequestMethod.GET,RequestMethod.POST})
+//    @ApiImplicitParams({
+//        @ApiImplicitParam(name = "mozatId", value = "客户身份唯一性标识号", required = true, dataType = "string", paramType = "header"),
+//        @ApiImplicitParam(name = "source", value = "tokenId", required = true, dataType = "string", paramType = "header")
+//    })
     public SillyHatAJAX boundCard(@PathVariable String mozatId,@PathVariable String source) {
 //    public SillyHatAJAX boundCard(@RequestParam("mozatId")String mozatId,@RequestParam("source")String source) {
         Map<String,Object> result = new HashMap<String,Object>();
@@ -86,39 +104,6 @@ public class CustomerController {
     }
 
     @ResponseBody
-    @ApiOperation(value = "新增客户", response = SillyHatAJAX.class, notes = "新增客户")
-    @RequestMapping(value = "/addCustomer", method = {RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
-    public SillyHatAJAX addCustomer(@RequestBody Customer customer) {
-
-        return new SillyHatAJAX(true);
-    }
-
-    @ResponseBody
-    @ApiOperation(value = "修改客户", response = SillyHatAJAX.class, notes = "修改客户")
-    @RequestMapping(value = "/updateCustomer", method = {RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
-    public SillyHatAJAX updateCustomer(@RequestBody Customer customer) {
-
-        return new SillyHatAJAX(true);
-    }
-
-    @ResponseBody
-    @ApiOperation(value = "删除客户", response = SillyHatAJAX.class, notes = "删除客户")
-    @RequestMapping(value = "/deleteCustomer", method = {RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
-    public SillyHatAJAX deleteCustomer(@RequestBody Customer customer) {
-
-        return new SillyHatAJAX(true);
-    }
-
-
-    @ResponseBody
-    @ApiOperation(value = "批量查询客户", response = SillyHatAJAX.class, notes = "批量查询客户")
-    @RequestMapping(value = "/queryCustomerByLimit", method = {RequestMethod.GET},consumes = MediaType.APPLICATION_JSON_VALUE)
-    public SillyHatAJAX queryCustomerByLimit(@RequestBody Customer customer) {
-
-        return new SillyHatAJAX(true);
-    }
-
-    @ResponseBody
     @ApiOperation(value = "查询客户", response = SillyHatAJAX.class, notes = "查询客户")
     @RequestMapping(value = "/getCustomerById/{id}", method = RequestMethod.GET)
     public SillyHatAJAX getCustomerById(@PathVariable String id) {
@@ -131,47 +116,32 @@ public class CustomerController {
         return new SillyHatAJAX(customer);
     }
 
+    @ResponseBody
+    @ApiOperation(value = "查询客户", response = SillyHatAJAX.class, notes = "查询客户")
+    @RequestMapping(value = "/queryCustomerByParams", method = RequestMethod.GET)
+    public SillyHatAJAX queryCustomerByParams(@RequestParam("limit") Long limit,@RequestParam("startingAfter") String startingAfter,@RequestParam("endingBefore") String endingBefore) {
+        Map<String,Object> result = stripeService.queryCustomerByParams(limit,startingAfter,endingBefore);
+        logger.info("Stripe result : {}",result);
+        return new SillyHatAJAX(result);
+    }
 
-//    @ResponseBody
-//    @ApiOperation(value = "新增客户", response = SillyHatAJAX.class, notes = "新增客户")
-//    @RequestMapping(value = "/addCustomer", method = {RequestMethod.GET, RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public SillyHatAJAX addCustomer(@RequestBody String user) {
-//
-//        return new SillyHatAJAX(true);
-//    }
-//
-//    @ResponseBody
-//    @ApiOperation(value = "修改客户", response = SillyHatAJAX.class, notes = "修改客户")
-//    @RequestMapping(value = "/updateCustomer", method = {RequestMethod.GET, RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public SillyHatAJAX updateCustomer(@RequestBody String user) {
-//
-//        return new SillyHatAJAX(true);
-//    }
-//
-//    @ResponseBody
-//    @ApiOperation(value = "删除客户", response = SillyHatAJAX.class, notes = "删除客户")
-//    @RequestMapping(value = "/deleteCustomer", method = {RequestMethod.GET, RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public SillyHatAJAX deleteCustomer(@RequestBody String user) {
-//
-//        return new SillyHatAJAX(true);
-//    }
-//
-//
-//    @ResponseBody
-//    @ApiOperation(value = "批量查询客户", response = SillyHatAJAX.class, notes = "批量查询客户")
-//    @RequestMapping(value = "/queryCustomerByLimit", method = {RequestMethod.GET, RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public SillyHatAJAX queryCustomerByLimit(@RequestBody String user) {
-//
-//        return new SillyHatAJAX(true);
-//    }
-//
-//    @ResponseBody
-//    @ApiOperation(value = "查询客户", response = SillyHatAJAX.class, notes = "查询客户")
-//    @RequestMapping(value = "/getCustomerById", method = {RequestMethod.GET, RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public SillyHatAJAX getCustomerById(@RequestBody String user) {
-//
-//        return new SillyHatAJAX(true);
-//    }
-
+    /**
+     * https://docs.onemap.sg/
+     * @param postalCode
+     * @param returnGeom
+     * @param getAddrDetails
+     * @param pageNum
+     * @return
+     */
+    @ResponseBody
+    @ApiOperation(value = "根据邮编得到地址", response = SillyHatAJAX.class, notes = "根据邮编得到地址")
+    @RequestMapping(value = "/getAddressByPostalCode/{postalCode}/returnGeom/{returnGeom}/getAddrDetails/{getAddrDetails}/pageNum/{pageNum}", method = RequestMethod.GET)
+//    public SillyHatAJAX queryCustomerByParams(@PathVariable String postalCode) {
+    public SillyHatAJAX queryCustomerByParams(@PathVariable String postalCode,@PathVariable String returnGeom,@PathVariable String getAddrDetails,@PathVariable String pageNum) {
+        String params = "searchVal=" + postalCode + "&returnGeom="+returnGeom+"&getAddrDetails="+getAddrDetails+"&pageNum=" + pageNum;
+        String jsonSrc = HttpRequestUtils.sendGet(URL,params);
+        Map<String,Object> result = JsonUtils.jsonToObject(jsonSrc,Map.class);
+        return new SillyHatAJAX(result);
+    }
 
 }

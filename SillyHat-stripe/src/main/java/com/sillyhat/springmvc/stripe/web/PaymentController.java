@@ -8,6 +8,8 @@ import com.stripe.model.Card;
 import com.stripe.model.Charge;
 import com.stripe.model.Customer;
 import com.stripe.model.EphemeralKey;
+import com.wordnik.swagger.annotations.ApiImplicitParam;
+import com.wordnik.swagger.annotations.ApiImplicitParams;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -68,18 +70,46 @@ public class PaymentController {
     }
 
 
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(paramType="query",name="province",dataType="String",required=true,value="省",defaultValue="广东省"),// 每个参数的类型，名称，数据类型，是否校验，描述，默认值(这些在界面上有展示)
+//            @ApiImplicitParam(paramType="query",name="area",dataType="String",required=true,value="地区",defaultValue="南山区"),
+//            @ApiImplicitParam(paramType="query",name="street",dataType="String",required=true,value="街道",defaultValue="桃园路"),
+//            @ApiImplicitParam(paramType="query",name="num",dataType="String",required=true,value="门牌号",defaultValue="666")
+//    })
     @ResponseBody
     @ApiOperation(value = "创建一笔支付订单", response = SillyHatAJAX.class, notes = "创建一笔支付订单")
+//    @ApiImplicitParams({
+//        @ApiImplicitParam(name = "mozatId", value = "客户身份唯一性标识号", required = true, dataType = "string", paramType = "query"),
+//        @ApiImplicitParam(name = "cardId", value = "customer绑定银行卡ID", required = true, dataType = "string", paramType = "query"),
+//        @ApiImplicitParam(name = "amount", value = "消费金额", required = true, dataType = "Long", paramType = "query")
+//    })
     @RequestMapping(value = "/createdPayment", method = {RequestMethod.POST})
     public SillyHatAJAX createdPayment(@RequestParam("mozatId") String mozatId,@RequestParam("cardId") String cardId,@RequestParam("amount") Long amount) {
 //    public SillyHatAJAX createdPayment(@RequestBody PaymentDetailDTO dto) {
-        Map<String,Object> result = new HashMap<String,Object>();
         logger.info("mozatId : {}; cardId : {}; amount : {}",mozatId,cardId,amount);
         UserDTO user = userService.getUserByMozatId(mozatId);
         Customer customer = stripeService.getCustomerById(user.getCustomerId());
         Card card = stripeService.getCustomerCard(customer,cardId);
-        stripeService.createdPayment(customer.getId(),cardId,amount);
-        return new SillyHatAJAX("支付成功");
+        Map<String,Object> result = stripeService.createdPayment(customer.getId(),cardId,amount);
+        return new SillyHatAJAX(result);
+    }
+
+    @ResponseBody
+    @ApiOperation(value = "修改一笔支付订单", response = SillyHatAJAX.class, notes = "This request accepts only the description, metadata, receipt_email, fraud_details, and shipping as arguments.")
+    @RequestMapping(value = "/updatedPayment", method = {RequestMethod.POST})
+    public SillyHatAJAX updatedPayment(@RequestParam("chargeId") String chargeId, @RequestParam("receiptEmail")String receiptEmail) {
+        Map<String,Object> result = stripeService.updatePayment(chargeId,receiptEmail);
+        logger.info("Stripe result : {}",result);
+        return new SillyHatAJAX(result);
+    }
+
+    @ResponseBody
+    @ApiOperation(value = "查询交易信息", response = SillyHatAJAX.class, notes = "Limit默认10，只能录入1-100")
+    @RequestMapping(value = "/queryPaymentByParams", method = {RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
+    public SillyHatAJAX queryPaymentByParams(@RequestParam("limit") Long limit,@RequestParam("startingAfter") String startingAfter,@RequestParam("endingBefore") String endingBefore) {
+        Map<String,Object> result = stripeService.queryPaymentByParams(limit,startingAfter,endingBefore);
+        logger.info("Stripe result : {}",result);
+        return new SillyHatAJAX(result);
     }
 //        logger.info("cardNo : {},source : {},amount : {} , mozatId: {}",cardNo,source,amount,mozatId);
 //        try{
@@ -161,11 +191,32 @@ public class PaymentController {
     @ApiOperation(value = "退款申请", response = SillyHatAJAX.class, notes = "退款申请，金额不填写默认全额退款")
     @RequestMapping(value = "/createdRefund", method = {RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
     public SillyHatAJAX createdRefund(@RequestParam("chargeId") String chargeId,@RequestParam("amount") Long amount) {
-        Map<String,Object> result = stripeService.confirmCapturePayment(chargeId,amount);
+        Map<String,Object> result = stripeService.createdRefund(chargeId,amount);
         logger.info("Stripe result : {}",result);
-        return new SillyHatAJAX("确认支付成功");
+        return new SillyHatAJAX("退款成功");
     }
 
+    //Transaction type:
+    // adjustment, application_fee,
+    // application_fee_refund,
+    // charge,
+    // payment,
+    // payment_failure_refund,
+    // payment_refund,
+    // refund,
+    // transfer,
+    // transfer_refund,
+    // payout,
+    // payout_cancel,
+    // payout_failure, or validation.
+    @ResponseBody
+    @ApiOperation(value = "查询交易信息", response = SillyHatAJAX.class, notes = "Limit默认10，只能录入1-100")
+    @RequestMapping(value = "/queryBalanceTransaction", method = {RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
+    public SillyHatAJAX queryBalanceTransaction(@RequestParam("limit") Long limit,@RequestParam("startingAfter") String startingAfter,@RequestParam("endingBefore") String endingBefore) {
+        Map<String,Object> result = stripeService.queryBalanceTransaction(limit,startingAfter,endingBefore);
+        logger.info("Stripe result : {}",result);
+        return new SillyHatAJAX(result);
+    }
 
 
 }

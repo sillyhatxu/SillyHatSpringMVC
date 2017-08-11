@@ -1,7 +1,10 @@
 package com.sillyhat.springmvc.stripe.service.impl;
 
 import com.sillyhat.base.utils.Constants;
-import com.sillyhat.springmvc.stripe.dto.*;
+import com.sillyhat.springmvc.stripe.dto.CardsDTO;
+import com.sillyhat.springmvc.stripe.dto.CustomerDTO;
+import com.sillyhat.springmvc.stripe.dto.SourcesDTO;
+import com.sillyhat.springmvc.stripe.dto.UserCardDTO;
 import com.sillyhat.springmvc.stripe.service.StripeService;
 import com.sillyhat.springmvc.stripe.service.UserService;
 import com.stripe.exception.*;
@@ -84,6 +87,84 @@ public class StripeServiceImpl implements StripeService{
         return createdCapturePayment(customer,cardId,amount,Constants.IS_CAPTURED_YES);//false 预收款
     }
 
+    @Override
+    public Map<String, Object> updatePayment(String chargeId, String receiptEmail) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        try {
+            Charge charge = Charge.retrieve(chargeId,getStripeRequestOptions());
+            Map<String, Object> updateParams = new HashMap<String, Object>();
+            updateParams.put("receipt_email", receiptEmail);
+            Charge chargeUpdate = charge.update(updateParams,getStripeRequestOptions());
+            result.put("charge",chargeUpdate);
+        } catch (CardException e) {
+            // Since it's a decline, CardException will be caught
+            logger.error("Status is: " + e.getCode());
+            logger.error("Message is: " + e.getMessage());
+        } catch (RateLimitException e) {
+            logger.error("Too many requests made to the API too quickly.",e);
+            // Too many requests made to the API too quickly
+        } catch (InvalidRequestException e) {
+            logger.error("Invalid parameters were supplied to Stripe's API.",e);
+            // Invalid parameters were supplied to Stripe's API
+        } catch (AuthenticationException e) {
+            logger.error("Authentication with Stripe's API failed.",e);
+            // Authentication with Stripe's API failed
+            // (maybe you changed API keys recently)
+        } catch (APIConnectionException e) {
+            logger.error("Network communication with Stripe failed.",e);
+            // Network communication with Stripe failed
+        } catch (StripeException e) {
+            logger.error("Display a very generic error to the user, and maybe send.",e);
+            // Display a very generic error to the user, and maybe send
+            // yourself an email
+        } catch (Exception e) {
+            logger.error("Something else happened, completely unrelated to Stripe.",e);
+            // Something else happened, completely unrelated to Stripe
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> queryPaymentByParams(Long limit, String startingAfter, String endingBefore) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            if(limit != null)
+                params.put("limit", limit);
+            if(StringUtils.isNotEmpty(startingAfter) && !startingAfter.equals("###"))
+                params.put("starting_after",startingAfter);
+            if(StringUtils.isNotEmpty(endingBefore) && !endingBefore.equals("###"))
+                params.put("ending_before", endingBefore);
+            ChargeCollection collection = Charge.list(params,getStripeRequestOptions());
+            result.put("data",collection.getData());
+        } catch (CardException e) {
+            // Since it's a decline, CardException will be caught
+            logger.error("Status is: " + e.getCode());
+            logger.error("Message is: " + e.getMessage());
+        } catch (RateLimitException e) {
+            logger.error("Too many requests made to the API too quickly.",e);
+            // Too many requests made to the API too quickly
+        } catch (InvalidRequestException e) {
+            logger.error("Invalid parameters were supplied to Stripe's API.",e);
+            // Invalid parameters were supplied to Stripe's API
+        } catch (AuthenticationException e) {
+            logger.error("Authentication with Stripe's API failed.",e);
+            // Authentication with Stripe's API failed
+            // (maybe you changed API keys recently)
+        } catch (APIConnectionException e) {
+            logger.error("Network communication with Stripe failed.",e);
+            // Network communication with Stripe failed
+        } catch (StripeException e) {
+            logger.error("Display a very generic error to the user, and maybe send.",e);
+            // Display a very generic error to the user, and maybe send
+            // yourself an email
+        } catch (Exception e) {
+            logger.error("Something else happened, completely unrelated to Stripe.",e);
+            // Something else happened, completely unrelated to Stripe
+        }
+        return result;
+    }
+
     private Map<String, Object> createdCapturePayment(String customer,String cardId,Long amount,boolean capture){
         Map<String, Object> result = new HashMap<String, Object>();
         try {
@@ -95,7 +176,8 @@ public class StripeServiceImpl implements StripeService{
             params.put("customer", customer);
             params.put("capture",capture);
             logger.info("Charge.create ----> {}",params);
-            Charge.create(params,getStripeRequestOptions());
+            Charge charge = Charge.create(params,getStripeRequestOptions());
+            result.put("charge",charge);
         } catch (CardException e) {
             // Since it's a decline, CardException will be caught
             logger.error("Status is: " + e.getCode());
@@ -178,8 +260,52 @@ public class StripeServiceImpl implements StripeService{
             if(amount != null){
                 params.put("amount", amount);
             }
-            Refund refund = Refund.create(params);
+            Refund refund = Refund.create(params,getStripeRequestOptions());
             result.put("refund",refund);
+        } catch (CardException e) {
+            // Since it's a decline, CardException will be caught
+            logger.error("Status is: " + e.getCode());
+            logger.error("Message is: " + e.getMessage());
+        } catch (RateLimitException e) {
+            logger.error("Too many requests made to the API too quickly.",e);
+            // Too many requests made to the API too quickly
+        } catch (InvalidRequestException e) {
+            logger.error("Invalid parameters were supplied to Stripe's API.",e);
+            // Invalid parameters were supplied to Stripe's API
+        } catch (AuthenticationException e) {
+            logger.error("Authentication with Stripe's API failed.",e);
+            // Authentication with Stripe's API failed
+            // (maybe you changed API keys recently)
+        } catch (APIConnectionException e) {
+            logger.error("Network communication with Stripe failed.",e);
+            // Network communication with Stripe failed
+        } catch (StripeException e) {
+            logger.error("Display a very generic error to the user, and maybe send.",e);
+            // Display a very generic error to the user, and maybe send
+            // yourself an email
+        } catch (Exception e) {
+            logger.error("Something else happened, completely unrelated to Stripe.",e);
+            // Something else happened, completely unrelated to Stripe
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> queryBalanceTransaction(Long limit, String startingAfter, String endingBefore) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            if(limit != null)
+                params.put("limit", limit);
+            if(StringUtils.isNotEmpty(startingAfter) && !startingAfter.equals("###"))
+                params.put("starting_after",startingAfter);
+            if(StringUtils.isNotEmpty(endingBefore) && !endingBefore.equals("###"))
+                params.put("ending_before", endingBefore);
+            BalanceTransactionCollection balanceTransactionCollection = BalanceTransaction.list(params,getStripeRequestOptions());
+            result.put("data",balanceTransactionCollection.getData());
+//            Iterable<BalanceTransaction> itBalanceTransaction = balanceTransactionCollection.autoPagingIterable();
+//            for (BalanceTransaction balanceTransactionomer : itBalanceTransaction) {
+//            }
         } catch (CardException e) {
             // Since it's a decline, CardException will be caught
             logger.error("Status is: " + e.getCode());
@@ -433,6 +559,51 @@ public class StripeServiceImpl implements StripeService{
             // Something else happened, completely unrelated to Stripe
         }
         return customer;
+    }
+
+    @Override
+    public Map<String, Object> queryCustomerByParams(Long limit, String startingAfter, String endingBefore) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            if(limit != null)
+                params.put("limit", limit);
+            if(StringUtils.isEmpty(startingAfter) && !startingAfter.equals("###"))
+                params.put("starting_after",startingAfter);
+            if(StringUtils.isNotEmpty(endingBefore) && !endingBefore.equals("###"))
+                params.put("ending_before", endingBefore);
+            CustomerCollection customerCollection = Customer.list(params,getStripeRequestOptions());
+            result.put("data",customerCollection.getData());
+//            Iterable<Customer> itCustomers = customerCollection.autoPagingIterable();
+//            for (Customer customer : itCustomers) {
+//                customer.delete();
+//            }
+        } catch (CardException e) {
+            // Since it's a decline, CardException will be caught
+            logger.error("Status is: " + e.getCode());
+            logger.error("Message is: " + e.getMessage());
+        } catch (RateLimitException e) {
+            logger.error("Too many requests made to the API too quickly.",e);
+            // Too many requests made to the API too quickly
+        } catch (InvalidRequestException e) {
+            logger.error("Invalid parameters were supplied to Stripe's API.",e);
+            // Invalid parameters were supplied to Stripe's API
+        } catch (AuthenticationException e) {
+            logger.error("Authentication with Stripe's API failed.",e);
+            // Authentication with Stripe's API failed
+            // (maybe you changed API keys recently)
+        } catch (APIConnectionException e) {
+            logger.error("Network communication with Stripe failed.",e);
+            // Network communication with Stripe failed
+        } catch (StripeException e) {
+            logger.error("Display a very generic error to the user, and maybe send.",e);
+            // Display a very generic error to the user, and maybe send
+            // yourself an email
+        } catch (Exception e) {
+            logger.error("Something else happened, completely unrelated to Stripe.",e);
+            // Something else happened, completely unrelated to Stripe
+        }
+        return result;
     }
 
     @Override

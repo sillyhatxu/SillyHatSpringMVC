@@ -42,6 +42,24 @@ public interface StripeService {
     public Map<String,Object> createdPayment(String customer,String cardId,Long amount);
 
     /**
+     * This request accepts only the description, metadata, receipt_email, fraud_details, and shipping as arguments.
+     * 修改付款信息
+     * @param chargeId
+     * @return
+     */
+    public Map<String, Object> updatePayment(String chargeId,String receiptEmail);
+
+    /**
+     * 查询付款信息
+     * @param limit
+     * @param startingAfter
+     * @param endingBefore
+     * @return
+     */
+    public Map<String, Object> queryPaymentByParams(Long limit,String startingAfter,String endingBefore);
+
+
+    /**
      * 创建预授权支付申请
      * @param customer
      * @param cardId
@@ -65,6 +83,15 @@ public interface StripeService {
      * @return
      */
     public Map<String,Object> createdRefund(String chargeId,Long amount);
+
+    /**
+     * 查询交易信息
+     * @param limit
+     * @param startingAfter
+     * @param endingBefore
+     * @return
+     */
+    public Map<String,Object> queryBalanceTransaction(Long limit,String startingAfter,String endingBefore);
 
 
 
@@ -95,6 +122,16 @@ public interface StripeService {
      * @return
      */
     public Customer getCustomerById(String id);
+
+    /**
+     * 批量查询客户信息
+     * @param limit
+     * @param startingAfter
+     * @param endingBefore
+     * @return
+     */
+    public Map<String, Object> queryCustomerByParams(Long limit,String startingAfter,String endingBefore);
+
 
     /**
      * 客户绑定银行卡
