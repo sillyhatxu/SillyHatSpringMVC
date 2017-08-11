@@ -1,5 +1,6 @@
 package com.sillyhat.springmvc.stripe.service;
 
+import com.sillyhat.springmvc.stripe.dto.PaymentDetailDTO;
 import com.sillyhat.springmvc.stripe.dto.UserCardDTO;
 import com.sillyhat.springmvc.stripe.dto.UserDTO;
 
@@ -12,6 +13,8 @@ public interface UserService {
     public UserDTO getUserByMozatId(String mozatId);
 
     public List<UserCardDTO> queryUserCardList(Long userId);
+
+    public UserCardDTO getUserCardByParams(Long userId,PaymentDetailDTO dto);
 
     public void addUserCard(UserCardDTO dto);
 

@@ -25,8 +25,8 @@ public class CustomerTest extends JunitTestSupport{
     public void testCreatedCardToken(){
         CardsDTO dto = new CardsDTO();
         dto.setNumber("371449635398431");
-        dto.setExp_month("10");
-        dto.setExp_year("2019");
+        dto.setExpMonth("10");
+        dto.setExpYear("2019");
         dto.setCvc("111");
         String tokenId = stripeService.createdCardToken(dto);
         logger.info("token id -----> {}",tokenId);
@@ -44,8 +44,8 @@ public class CustomerTest extends JunitTestSupport{
         customerDTO.setDescription("Test XUSHIKUAN1");
         CardsDTO cardsDTO = new CardsDTO();
         cardsDTO.setNumber("371449635398431");
-        cardsDTO.setExp_month("10");
-        cardsDTO.setExp_year("2019");
+        cardsDTO.setExpMonth("10");
+        cardsDTO.setExpYear("2019");
         cardsDTO.setCvc("111");
         List<CardsDTO> cardsDTOList = new ArrayList<CardsDTO>();
         cardsDTOList.add(cardsDTO);
@@ -63,8 +63,8 @@ public class CustomerTest extends JunitTestSupport{
         customerDTO.setDescription("Test XUSHIKUAN1");
         CardsDTO cardsDTO = new CardsDTO();
         cardsDTO.setNumber("371449635398431");
-        cardsDTO.setExp_month("10");
-        cardsDTO.setExp_year("2019");
+        cardsDTO.setExpMonth("10");
+        cardsDTO.setExpYear("2019");
         cardsDTO.setCvc("111");
         List<CardsDTO> cardsDTOList = new ArrayList<CardsDTO>();
         cardsDTOList.add(cardsDTO);

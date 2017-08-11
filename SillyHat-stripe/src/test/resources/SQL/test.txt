@@ -13,7 +13,7 @@ MySQL最大连接数默认是100客户端登录：
 
 MySQL -u username -p password
 设置新的MySQL最大连接数为200：
-
+show variables like 'max_connections';
 MySQL> set GLOBAL max_connections=2000
 显示当前运行的Query：
 

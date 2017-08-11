@@ -14,6 +14,8 @@ public interface UserMapper {
 
     public List<UserCardDTO> queryUserCardList(@Param("userId") Long userId);
 
+    public UserCardDTO getUserCardByParams(@Param("userId")Long userId,@Param("cardEncrypt")String cardEncrypt);
+
     public Long addUserCard(UserCardDTO dto);
 
     public void updateUserCard(UserCardDTO dto);

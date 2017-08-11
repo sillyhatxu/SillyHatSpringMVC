@@ -15,6 +15,18 @@ public class CustomerDTO implements Serializable {
 
     private static final long serialVersionUID = 8718336376807047815L;
 
+    public CustomerDTO(){
+
+    }
+
+    public CustomerDTO(String id){
+        this.id = id;
+    }
+
+    public CustomerDTO(String email,String description){
+        this.email = email;
+        this.description = description;
+    }
     /**
      * Unique identifier for the object.
      */

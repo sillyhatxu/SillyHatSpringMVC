@@ -2,11 +2,16 @@ package com.sillyhat.springmvc.stripe.dto;
 
 import java.io.Serializable;
 
-public class CardsDTO implements Serializable {
+public class PaymentDetailDTO implements Serializable {
 
     private static final long serialVersionUID = 9181222411667774617L;
 
     private String customerId;
+
+    private String mozatId;
+
+    private Long amount;
+
     /**
      * The type of payment source. Should be "card".
      */
@@ -214,5 +219,45 @@ public class CardsDTO implements Serializable {
 
     public void setCustomerId(String customerId) {
         this.customerId = customerId;
+    }
+
+    public String getMozatId() {
+        return mozatId;
+    }
+
+    public void setMozatId(String mozatId) {
+        this.mozatId = mozatId;
+    }
+
+    public Long getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Long amount) {
+        this.amount = amount;
+    }
+
+    @Override
+    public String toString() {
+        return "PaymentDetailDTO{" +
+                "customerId='" + customerId + '\'' +
+                ", mozatId='" + mozatId + '\'' +
+                ", amount=" + amount +
+                ", object='" + object + '\'' +
+                ", expMonth='" + expMonth + '\'' +
+                ", expYear='" + expYear + '\'' +
+                ", number='" + number + '\'' +
+                ", addressCity='" + addressCity + '\'' +
+                ", addressCountry='" + addressCountry + '\'' +
+                ", addressLine1='" + addressLine1 + '\'' +
+                ", addressLine2='" + addressLine2 + '\'' +
+                ", addressState='" + addressState + '\'' +
+                ", addressZip='" + addressZip + '\'' +
+                ", currency='" + currency + '\'' +
+                ", cvc='" + cvc + '\'' +
+                ", defaultForCurrency='" + defaultForCurrency + '\'' +
+                ", metadata='" + metadata + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

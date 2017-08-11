@@ -19,7 +19,7 @@ public class PaymentTest extends JunitTestSupport{
     public void testCreatedCapturePayment() {
         PaymentDTO dto = new PaymentDTO();
         dto.setAmount(5000l);
-        stripeService.createdCapturePayment(dto);
+//        stripeService.createdCapturePayment(dto);
     }
 
 

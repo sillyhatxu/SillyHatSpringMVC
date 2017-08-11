@@ -1,16 +1,15 @@
 package com.sillyhat.springmvc.stripe.web;
 
 import com.sillyhat.base.dto.SillyHatAJAX;
-import com.sillyhat.springmvc.stripe.dto.CustomerDTO;
-import com.sillyhat.springmvc.stripe.dto.PaymentDTO;
-import com.sillyhat.springmvc.stripe.dto.UserCardDTO;
-import com.sillyhat.springmvc.stripe.dto.UserDTO;
+import com.sillyhat.springmvc.stripe.dto.*;
 import com.sillyhat.springmvc.stripe.service.StripeService;
 import com.sillyhat.springmvc.stripe.service.UserService;
+import com.stripe.model.Card;
 import com.stripe.model.Charge;
 import com.stripe.model.Customer;
 import com.stripe.model.EphemeralKey;
 import com.wordnik.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * LearningWordController
@@ -57,48 +60,112 @@ public class PaymentController {
     }
 
     @ResponseBody
+    @ApiOperation(value = "创建Token", response = SillyHatAJAX.class, notes = "创建Token")
+    @RequestMapping(value = "/createdToken", method = {RequestMethod.GET,RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
+    public SillyHatAJAX createdToken(@RequestBody CardsDTO dto) {
+//    public SillyHatAJAX createdToken(CardsDTO dto) {
+        return new SillyHatAJAX(stripeService.createdCardToken(dto));
+    }
+
+
+    @ResponseBody
     @ApiOperation(value = "创建一笔支付订单", response = SillyHatAJAX.class, notes = "创建一笔支付订单")
     @RequestMapping(value = "/createdPayment", method = {RequestMethod.POST})
-    public SillyHatAJAX createdPayment(@RequestParam("source") String source,@RequestParam("amount") String amount,@RequestParam("mozatId") String mozatId) {
-//    public SillyHatAJAX createdPayment(@PathVariable String params) {
-        logger.info("source : {},amount : {} , mozatId: {}",source,amount,mozatId);
-        try{
-            UserDTO userDTO = userService.getUserByMozatId(mozatId);
-            if(userDTO == null){
-                CustomerDTO customerDTO = new CustomerDTO();
-                customerDTO.setDescription(mozatId);
-                Customer customer = stripeService.createdCustomer(customerDTO);
-                userDTO = new UserDTO();
-                userDTO.setMozatId(mozatId);
-                userDTO.setCustomerId(customer.getId());
-                userService.addUser(userDTO);
-                UserCardDTO userCardDTO = new UserCardDTO();
-                userCardDTO.setTokenId(source);
-            }
-            PaymentDTO paymentDTO = new PaymentDTO();
-            paymentDTO.setAmount(Long.parseLong(amount));
-            paymentDTO.setSource(source);
-            stripeService.createdPayment(paymentDTO);
-            return new SillyHatAJAX("支付成功");
-        } catch (Exception e){
-            return new SillyHatAJAX("支付发生异常");
-        }
+    public SillyHatAJAX createdPayment(@RequestParam("mozatId") String mozatId,@RequestParam("cardId") String cardId,@RequestParam("amount") Long amount) {
+//    public SillyHatAJAX createdPayment(@RequestBody PaymentDetailDTO dto) {
+        Map<String,Object> result = new HashMap<String,Object>();
+        logger.info("mozatId : {}; cardId : {}; amount : {}",mozatId,cardId,amount);
+        UserDTO user = userService.getUserByMozatId(mozatId);
+        Customer customer = stripeService.getCustomerById(user.getCustomerId());
+        Card card = stripeService.getCustomerCard(customer,cardId);
+        stripeService.createdPayment(customer.getId(),cardId,amount);
+        return new SillyHatAJAX("支付成功");
     }
+//        logger.info("cardNo : {},source : {},amount : {} , mozatId: {}",cardNo,source,amount,mozatId);
+//        try{
+//            UserDTO userDTO = userService.getUserByMozatId(dto.getMozatId());
+//            UserCardDTO sourceCard = null;
+//            if(userDTO == null){
+//                CustomerDTO customerDTO = new CustomerDTO();
+//                customerDTO.setDescription(dto.getMozatId());
+//                Customer customer = stripeService.createdCustomer(customerDTO);
+//                userDTO = new UserDTO();
+//                userDTO.setMozatId(dto.getMozatId());
+//                userDTO.setCustomerId(customer.getId());
+//                userService.addUser(userDTO);
+//            }
+//            dto.setCustomerId(userDTO.getCustomerId());
+//            sourceCard  = userService.getUserCardByParams(userDTO.getId(),dto);
+//            PaymentDTO paymentDTO = new PaymentDTO();
+//            paymentDTO.setCustomer(userDTO.getCustomerId());
+//            paymentDTO.setAmount(dto.getAmount());
+////            paymentDTO.setSource(sourceCard.getTokenId());
+//            stripeService.createdPayment(paymentDTO);
+//            return new SillyHatAJAX("支付成功");
+//        } catch (Exception e){
+//            return new SillyHatAJAX("支付发生异常");
+//        }
+//        try{
+//            UserDTO userDTO = userService.getUserByMozatId(mozatId);
+//            if(userDTO == null){
+//                CustomerDTO customerDTO = new CustomerDTO();
+//                customerDTO.setDescription(mozatId);
+//                Customer customer = stripeService.createdCustomer(customerDTO);
+//                customerId = customer.getId();
+//                userDTO = new UserDTO();
+//                userDTO.setMozatId(mozatId);
+//                userDTO.setCustomerId(customerId);
+//                userService.addUser(userDTO);
+//            }
+//            PaymentDTO paymentDTO = new PaymentDTO();
+//            paymentDTO.setCustomer(customerId);
+//            paymentDTO.setAmount(Long.parseLong(amount));
+//            if(StringUtils.isNotEmpty(source)){
+//                boolean boundCard = true;//判断是否需要创建新绑定的卡
+//                List<UserCardDTO> userCardDTOList = userService.queryUserCardList(userDTO.getId());
+//                for(UserCardDTO userCardDTO : userCardDTOList){
+//                    if(userCardDTO.getTokenId().equals(source)){
+//                        boundCard = false;
+//                    }
+//                }
+//                paymentDTO.setSource(source);
+//                if(boundCard){
+//                    stripeService.boundCustomerCard(customerId,source);//绑定银行卡
+//                }
+//            }
+//            stripeService.createdPayment(paymentDTO);
+//            return new SillyHatAJAX("支付成功");
+//        } catch (Exception e){
+//            return new SillyHatAJAX("支付发生异常");
+//        }
+//    }
 
     @ResponseBody
     @ApiOperation(value = "创建一笔预授权支付订单", response = SillyHatAJAX.class, notes = "创建一笔预授权支付订单")
     @RequestMapping(value = "/createdCapturePayment", method = {RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
-    public SillyHatAJAX createdCapturePayment(@RequestBody Charge charge) {
-        stripeService.createdCapturePayment(null);
+    public SillyHatAJAX createdCapturePayment(@RequestParam("mozatId") String mozatId,@RequestParam("cardId") String cardId,@RequestParam("amount") Long amount) {
+        UserDTO user = userService.getUserByMozatId(mozatId);
+        stripeService.createdCapturePayment(user.getCustomerId(),cardId,amount);
         return new SillyHatAJAX(true);
     }
-
 
     @ResponseBody
-    @ApiOperation(value = "后台管理-系统管理-保存用户", response = String.class, notes = "后台管理-系统管理-保存用户")
-    @RequestMapping(value = "/saveUser", method = {RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
-    public SillyHatAJAX saveUser(@RequestBody String user) {
-
-        return new SillyHatAJAX(true);
+    @ApiOperation(value = "预授权订单确认收款", response = SillyHatAJAX.class, notes = "预授权订单确认收款")
+    @RequestMapping(value = "/confirmCapturePayment", method = {RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
+    public SillyHatAJAX confirmCapturePayment(@RequestParam("chargeId") String chargeId,@RequestParam("amount") Long amount) {
+        stripeService.confirmCapturePayment(chargeId,amount);
+        return new SillyHatAJAX("确认支付成功");
     }
+
+    @ResponseBody
+    @ApiOperation(value = "退款申请", response = SillyHatAJAX.class, notes = "退款申请，金额不填写默认全额退款")
+    @RequestMapping(value = "/createdRefund", method = {RequestMethod.POST},consumes = MediaType.APPLICATION_JSON_VALUE)
+    public SillyHatAJAX createdRefund(@RequestParam("chargeId") String chargeId,@RequestParam("amount") Long amount) {
+        Map<String,Object> result = stripeService.confirmCapturePayment(chargeId,amount);
+        logger.info("Stripe result : {}",result);
+        return new SillyHatAJAX("确认支付成功");
+    }
+
+
+
 }

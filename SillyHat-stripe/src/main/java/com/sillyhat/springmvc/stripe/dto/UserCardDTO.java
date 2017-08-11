@@ -9,13 +9,9 @@ public class UserCardDTO implements Serializable {
 
     private Long userId;
 
-    private String tokenId;
-
     private String cardId;
 
     private String cardNumber;
-
-    private String cardEncrypt;
 
     public Long getId() {
         return id;
@@ -31,14 +27,6 @@ public class UserCardDTO implements Serializable {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public String getTokenId() {
-        return tokenId;
-    }
-
-    public void setTokenId(String tokenId) {
-        this.tokenId = tokenId;
     }
 
     public String getCardId() {
@@ -57,23 +45,13 @@ public class UserCardDTO implements Serializable {
         this.cardNumber = cardNumber;
     }
 
-    public String getCardEncrypt() {
-        return cardEncrypt;
-    }
-
-    public void setCardEncrypt(String cardEncrypt) {
-        this.cardEncrypt = cardEncrypt;
-    }
-
     @Override
     public String toString() {
         return "UserCardDTO{" +
                 "id=" + id +
                 ", userId='" + userId + '\'' +
-                ", tokenId='" + tokenId + '\'' +
                 ", cardId='" + cardId + '\'' +
                 ", cardNumber='" + cardNumber + '\'' +
-                ", cardEncrypt='" + cardEncrypt + '\'' +
                 '}';
     }
 }

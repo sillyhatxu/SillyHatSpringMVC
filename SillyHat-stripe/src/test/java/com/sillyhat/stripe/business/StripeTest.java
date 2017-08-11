@@ -22,24 +22,46 @@ public class StripeTest {
 //    Secret key
 //    sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv
     public static void main(String[] args) {
-
-//        createdPayment();//创建交易信息
+        createdPayment();//创建交易信息
 //        createdPayment(UUIDUtils.getUUID());//创建交易信息
+//        createdCapturePayment();
+//        confirmCapturePayment();
 //        idempotentRequest();//重复交易
 //        queryPaymentById1("ch_1AmLCcAuC6WOU0qqVQjY6jI9");//根据交易ID查询交易信息
 //        queryPaymentById2("ch_1AmLHKAuC6WOU0qqg14tennl");//查询支付详情
 //        reimburseTransaction();//退款申请
 //        balanceRetrieve();//查询余额
-//        refundPaymentById("ch_1AmKmrAuC6WOU0qqhWKDeBIg",88888);//退款申请
+//        refundPaymentById("ch_1ApFf0AuC6WOU0qq2iOMmO6j",2000);//退款申请
 //        createdCustomer();//Create a customer创建客户
 //        queryCustomerByID("cus_B8ZiL9YoFFduqA");//查询客户
 //        queryCustomerByLimit(20);//查询客户信息
-        updateCustomerByID("cus_BAVT2u8JTiXNV0");//修改客户信息
+//        updateCustomerByID("cus_BAVT2u8JTiXNV0");//修改客户信息
 //        deleteCustomerByID("");
 //        createdCardToken();
     }
 
-
+private static void deleteAllCustomer(){
+    Stripe.apiKey = "sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv";
+    Map<String, Object> customerParams = new HashMap<String, Object>();
+    customerParams.put("limit", 50);
+    try {
+        CustomerCollection customerCollection = Customer.list(customerParams);
+        Iterable<Customer> itCustomers = customerCollection.autoPagingIterable();
+        for (Customer customer : itCustomers) {
+            customer.delete();
+        }
+    } catch (AuthenticationException e) {
+        e.printStackTrace();
+    } catch (InvalidRequestException e) {
+        e.printStackTrace();
+    } catch (APIConnectionException e) {
+        e.printStackTrace();
+    } catch (CardException e) {
+        e.printStackTrace();
+    } catch (APIException e) {
+        e.printStackTrace();
+    }
+}
     /**
      * 处理重复请求
      */
@@ -56,10 +78,10 @@ public class StripeTest {
 
             Map<String, Object> tokenParams = new HashMap<String, Object>();
             Map<String, Object> cardParams = new HashMap<String, Object>();
-            cardParams.put("number", "4242424242424242");
+            cardParams.put("number", "5555555555554444");
             cardParams.put("exp_month", 8);
-            cardParams.put("exp_year", 2018);
-            cardParams.put("cvc", "314");
+            cardParams.put("exp_year", 2019);
+            cardParams.put("cvc", "111");
             tokenParams.put("card", cardParams);
 
             Token token = Token.create(tokenParams);
@@ -252,21 +274,107 @@ public class StripeTest {
         }
     }
 
+
+    public static void createdCapturePayment(){
+        try {
+            Stripe.apiKey = "sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv";
+            Map<String, Object> chargeParams = new HashMap<String, Object>();
+            chargeParams.put("amount", 3000);
+            chargeParams.put("currency", "sgd");
+            chargeParams.put("customer","cus_BBatoeNArbLcfe");
+            chargeParams.put("capture",false);
+//            chargeParams.put("source", "card_1ApBxUAuC6WOU0qqjHuMTlvS");
+            // ^ obtained with Stripe.js
+//            Map<String, String> initialMetadata = new HashMap<String, String>();
+//            initialMetadata.put("order_id", "6735");
+//            chargeParams.put("metadata", initialMetadata);cus_BBatoeNArbLcfe
+            Charge charge = Charge.create(chargeParams);
+            logger.info("Amount : {} ",charge.getAmount());
+            logger.info("AmountRefunded : {} ",charge.getAmountRefunded());
+            logger.info("Application : {} ",charge.getApplication());
+            logger.info("ApplicationFee : {} ",charge.getApplicationFee());
+            logger.info("BalanceTransaction : {} ",charge.getBalanceTransaction());
+            logger.info("Customer : {} ",charge.getCustomer());
+        } catch (CardException e) {
+            // Since it's a decline, CardException will be caught
+            logger.info("Status is: " + e.getCode());
+            logger.info("Message is: " + e.getMessage());
+        } catch (RateLimitException e) {
+            logger.error("Too many requests made to the API too quickly.",e);
+            // Too many requests made to the API too quickly
+        } catch (InvalidRequestException e) {
+            logger.error("Invalid parameters were supplied to Stripe's API.",e);
+            // Invalid parameters were supplied to Stripe's API
+        } catch (AuthenticationException e) {
+            logger.error("Authentication with Stripe's API failed.",e);
+            // Authentication with Stripe's API failed
+            // (maybe you changed API keys recently)
+        } catch (APIConnectionException e) {
+            logger.error("Network communication with Stripe failed.",e);
+            // Network communication with Stripe failed
+        } catch (StripeException e) {
+            logger.error("Display a very generic error to the user, and maybe send.",e);
+            // Display a very generic error to the user, and maybe send
+            // yourself an email
+        } catch (Exception e) {
+            logger.error("Something else happened, completely unrelated to Stripe.",e);
+            // Something else happened, completely unrelated to Stripe
+        }
+    }
+    public static void confirmCapturePayment(){
+        try {
+            Stripe.apiKey = "sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv";
+            Charge charge = Charge.retrieve("ch_1ApGInAuC6WOU0qqCpEXGUWZ");
+            Map<String,Object> params = new HashMap<String,Object>();
+            params.put("amount",500l);
+            charge.capture(params);
+            logger.info("Amount : {} ",charge.getAmount());
+            logger.info("AmountRefunded : {} ",charge.getAmountRefunded());
+            logger.info("Application : {} ",charge.getApplication());
+            logger.info("ApplicationFee : {} ",charge.getApplicationFee());
+            logger.info("BalanceTransaction : {} ",charge.getBalanceTransaction());
+            logger.info("Customer : {} ",charge.getCustomer());
+        } catch (CardException e) {
+            // Since it's a decline, CardException will be caught
+            logger.info("Status is: " + e.getCode());
+            logger.info("Message is: " + e.getMessage());
+        } catch (RateLimitException e) {
+            logger.error("Too many requests made to the API too quickly.",e);
+            // Too many requests made to the API too quickly
+        } catch (InvalidRequestException e) {
+            logger.error("Invalid parameters were supplied to Stripe's API.",e);
+            // Invalid parameters were supplied to Stripe's API
+        } catch (AuthenticationException e) {
+            logger.error("Authentication with Stripe's API failed.",e);
+            // Authentication with Stripe's API failed
+            // (maybe you changed API keys recently)
+        } catch (APIConnectionException e) {
+            logger.error("Network communication with Stripe failed.",e);
+            // Network communication with Stripe failed
+        } catch (StripeException e) {
+            logger.error("Display a very generic error to the user, and maybe send.",e);
+            // Display a very generic error to the user, and maybe send
+            // yourself an email
+        } catch (Exception e) {
+            logger.error("Something else happened, completely unrelated to Stripe.",e);
+            // Something else happened, completely unrelated to Stripe
+        }
+    }
     /**
      * 创建交易信息
      */
     public static void createdPayment(){
         try {
             Stripe.apiKey = "sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv";
-
             Map<String, Object> chargeParams = new HashMap<String, Object>();
-            chargeParams.put("amount", 2000);
+            chargeParams.put("amount", 2100);
             chargeParams.put("currency", "sgd");
-            chargeParams.put("source", "tok_visa");
+            chargeParams.put("customer","cus_BBatoeNArbLcfe");
+            chargeParams.put("source", "card_1ApFHLAuC6WOU0qqHYi0swy2");
             // ^ obtained with Stripe.js
-            Map<String, String> initialMetadata = new HashMap<String, String>();
-            initialMetadata.put("order_id", "6735");
-            chargeParams.put("metadata", initialMetadata);
+//            Map<String, String> initialMetadata = new HashMap<String, String>();
+//            initialMetadata.put("order_id", "6735");
+//            chargeParams.put("metadata", initialMetadata);cus_BBatoeNArbLcfe
             Charge charge = Charge.create(chargeParams);
             logger.info("Amount : {} ",charge.getAmount());
             logger.info("AmountRefunded : {} ",charge.getAmountRefunded());

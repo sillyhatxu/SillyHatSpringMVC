@@ -11,8 +11,8 @@ public class StartServer {
     
     private static final Logger logger = LoggerFactory.getLogger(StartServer.class);
 
-//    public static final int PORT = 8108;
-    public static final int PORT = 8109;
+    public static final int PORT = 8108;
+//    public static final int PORT = 8109;
 
     public static final String CONTEXT = "/SillyHatSpringMVC";
 

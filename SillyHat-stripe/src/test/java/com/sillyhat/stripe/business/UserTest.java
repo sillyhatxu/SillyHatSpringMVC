@@ -49,10 +49,10 @@ public class UserTest extends JunitTestSupport{
     public void testAddUserCard() {
         UserCardDTO dto = new UserCardDTO();
         dto.setUserId(1l);
-        dto.setTokenId("asdfsdfsgsagdasgsagfdgfdgdfhd");
+//        dto.setTokenId("asdfsdfsgsagdasgsagfdgfdgdfhd");
         dto.setCardId("card_1AoOdwAuC6WOU0qqlXQNS6B2");
         dto.setCardNumber("0259");
-        dto.setCardEncrypt(MD5Util.toMD5Upper("4000000000000259"));
+//        dto.setCardEncrypt(MD5Util.toMD5Upper("4000000000000259"));
         userService.addUserCard(dto);
     }
 
@@ -61,10 +61,10 @@ public class UserTest extends JunitTestSupport{
         UserCardDTO dto = new UserCardDTO();
         dto.setId(1l);
         dto.setUserId(1l);
-        dto.setTokenId("asdfsdfsgsagdasgsagfdgfdgdfhd");
+//        dto.setTokenId("asdfsdfsgsagdasgsagfdgfdgdfhd");
         dto.setCardId("card_1AoOdwAuC6WOU0qqlXQNS6B2");
         dto.setCardNumber("1234");
-        dto.setCardEncrypt(MD5Util.toMD5Upper("4000000000000259"));
+//        dto.setCardEncrypt(MD5Util.toMD5Upper("4000000000000259"));
         userService.updateUserCard(dto);
     }
 

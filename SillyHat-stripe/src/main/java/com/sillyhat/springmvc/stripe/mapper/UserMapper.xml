@@ -15,27 +15,33 @@
         select
             ID as id,
             USER_ID as userId,
-            TOKEN_ID as tokenId,
             CARD_ID as cardId,
-            CARD_NUMBER as cardNumber,
-            CARD_ENCRYPT as cardEncrypt
+            CARD_NUMBER as cardNumber
+        from T_BASE_USER_CARD
+        where USER_ID = #{userId}
+    </select>
+
+    <select id="getUserCardByParams" resultType="com.sillyhat.springmvc.stripe.dto.UserCardDTO">
+        select
+            ID as id,
+            USER_ID as userId,
+            CARD_ID as cardId,
+            CARD_NUMBER as cardNumber
         from T_BASE_USER_CARD
         where USER_ID = #{userId}
     </select>
 
     <insert id="addUserCard" keyProperty="id" useGeneratedKeys="true" parameterType="com.sillyhat.springmvc.stripe.dto.UserCardDTO">
-        insert into T_BASE_USER_CARD(USER_ID,TOKEN_ID,CARD_ID,CARD_NUMBER,CARD_ENCRYPT)
-        values (#{userId},#{tokenId},#{cardId},#{cardNumber},#{cardEncrypt})
+        insert into T_BASE_USER_CARD(USER_ID,CARD_ID,CARD_NUMBER)
+        values (#{userId},#{cardId},#{cardNumber})
     </insert>
 
     <update id="updateUserCard" parameterType="com.sillyhat.springmvc.stripe.dto.UserCardDTO">
         update T_BASE_USER_CARD
         set
             USER_ID = #{userId},
-            TOKEN_ID = #{tokenId},
             CARD_ID = #{cardId},
-            CARD_NUMBER = #{cardNumber},
-            CARD_ENCRYPT = #{cardEncrypt}
+            CARD_NUMBER = #{cardNumber}
         where ID = #{id}
     </update>
 
