@@ -99,7 +99,8 @@ public class StripeServiceImpl implements StripeService{
                 params.put("description", paymentDTO.getDescription());
 //            params.put("destination", paymentDTO.get);//直接转账号
             if(StringUtils.isNotEmpty(paymentDTO.getTransferGroup()))
-                params.put("transfer_group", paymentDTO.getTransferGroup());//将多个订单一次性付款
+                //https://stripe.com/docs/connect/charges-transfers#grouping-transactions
+                params.put("transfer_group", paymentDTO.getTransferGroup());//将多个订单一次性付款？？？？？
             if(StringUtils.isNotEmpty(paymentDTO.getOnBehalfOf()))
                 params.put("on_behalf_of", paymentDTO.getOnBehalfOf());
 //            if(StringUtils.isNotEmpty(paymentDTO.getDescription()))
