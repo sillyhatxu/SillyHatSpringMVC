@@ -36,7 +36,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         ApiInfo apiInfo = new ApiInfo("SillyHat API", "提供功能供第三方调用", "嘿咻傻帽的 Restful服务平台",
-                "xushikuan1@mozat.com", "BSD", "SillyHat framework API License URL");
+                "xushikuan1@163.com", "BSD", "SillyHat framework API License URL");
         return apiInfo;
     }
 }

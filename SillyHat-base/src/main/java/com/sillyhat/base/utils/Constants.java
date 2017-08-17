@@ -4,6 +4,11 @@ public class Constants {
 
     public static final int SILLYHAT_AJAX_SUCCESS = 200;
 
+    public static final int MOZAT_QUERY_SUCCESS = 200;
+    public static final int MOZAT_DELTE_SUCCESS = 200;
+    public static final int MOZAT_CREATED_SUCCESS = 201;
+    public static final String MOZAT_SUCCESS_MSG = "Success";;
+
     public static final String SILLYHAT_AJAX_SUCCESS_MSG = "Success";
 
     public static final boolean IS_CAPTURED_YES = true;
@@ -15,7 +20,7 @@ public class Constants {
 //    int SC_ACCEPTED = 202;
 //    int SC_NON_AUTHORITATIVE_INFORMATION = 203;
 //    int SC_NO_CONTENT = 204;
-//    int SC_RESET_CONTENT = 205;
+//    int SC_RESET_CONTENT = 205;H
 //    int SC_PARTIAL_CONTENT = 206;
 //    int SC_MULTIPLE_CHOICES = 300;
 //    int SC_MOVED_PERMANENTLY = 301;

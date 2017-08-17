@@ -22,7 +22,7 @@ public class StripeTest {
 //    Secret key
 //    sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv
     public static void main(String[] args) {
-        createdPayment();//创建交易信息
+//        createdPayment();//创建交易信息
 //        createdPayment(UUIDUtils.getUUID());//创建交易信息
 //        createdCapturePayment();
 //        confirmCapturePayment();
@@ -38,8 +38,104 @@ public class StripeTest {
 //        updateCustomerByID("cus_BAVT2u8JTiXNV0");//修改客户信息
 //        deleteCustomerByID("");
 //        createdCardToken();
+        createdSource();
     }
 
+private static void createdSource(){
+    try {
+        Stripe.apiKey = "sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv";
+        Map<String, Object> sourceParams = new HashMap<String, Object>();
+        sourceParams.put("type", "three_d_secure");
+        sourceParams.put("amount", 1000);
+        sourceParams.put("currency", "SGD");
+
+
+//        Stripe.apiKey = "sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv";
+//        Map<String, Object> tokenParams = new HashMap<String, Object>();
+//        Map<String, Object> cardParams = new HashMap<String, Object>();
+//        cardParams.put("number", "4242424242424242");
+//        cardParams.put("exp_month", 8);
+//        cardParams.put("exp_year", 2018);
+//        cardParams.put("cvc", "314");
+//        tokenParams.put("card", cardParams);
+//        tokenParams.put("customer", "cus_BBatoeNArbLcfe");
+//        Token token = Token.create(tokenParams);
+
+        Stripe.apiKey = "sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv";
+        Customer customer = Customer.retrieve("cus_BBatoeNArbLcfe");
+        Card card = (Card) customer.getSources().retrieve("card_1ApFHLAuC6WOU0qqHYi0swy2");
+        logger.info("card is json ----   {}",card.toJson());
+//        Stripe.apiKey = "sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv";
+//        Map<String, Object> tokenParams = new HashMap<String, Object>();
+//        Map<String, Object> cardParams = new HashMap<String, Object>();
+//        cardParams.put("number", card.getAccount());
+//        cardParams.put("exp_month", card.getExpMonth());
+//        cardParams.put("exp_year", card.getExpYear());
+//        cardParams.put("cvc", card.getCvcCheck());
+//        tokenParams.put("card", cardParams);
+////        tokenParams.put("customer", "cus_BBatoeNArbLcfe");
+//        Token token = Token.create(tokenParams);
+//        sourceParams.put("token", token.getId());
+
+        Map<String, Object> secureParams = new HashMap<String, Object>();
+        secureParams.put("card",card.getId());
+        sourceParams.put("three_d_secure",secureParams);
+
+
+        Map<String, Object> ownerParams = new HashMap<String, Object>();
+        ownerParams.put("email", "heixiushamao@gmail.com");
+        sourceParams.put("owner", ownerParams);
+
+
+
+        Map<String, Object> redirectParams = new HashMap<String, Object>();
+        redirectParams.put("return_url", "http://localhost:8108/SillyHatSpringMVC/");
+//        redirectParams.put("status", "");
+//        redirectParams.put("url", "");
+        sourceParams.put("redirect", redirectParams);
+        Source source = Source.create(sourceParams);
+        logger.info("source --- {}" , source.toJson());
+
+        Stripe.apiKey = "sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv";
+        Map<String, Object> chargeParams = new HashMap<String, Object>();
+//        chargeParams.put("amount", 33333);
+//        chargeParams.put("currency", "sgd");
+        chargeParams.put("description", "Charge for heixiushamao@heihei.com");
+        chargeParams.put("source", source.getId());
+        //创建交易
+        Charge charge = Charge.create(chargeParams);
+        logger.info("Amount : {} ",charge.getAmount());
+        logger.info("AmountRefunded : {} ",charge.getAmountRefunded());
+        logger.info("Application : {} ",charge.getApplication());
+        logger.info("ApplicationFee : {} ",charge.getApplicationFee());
+        logger.info("BalanceTransaction : {} ",charge.getBalanceTransaction());
+        logger.info("Customer : {} ",charge.getCustomer());
+    } catch (CardException e) {
+        // Since it's a decline, CardException will be caught
+        logger.info("Status is: " + e.getCode());
+        logger.info("Message is: " + e.getMessage());
+    } catch (RateLimitException e) {
+        logger.error("Too many requests made to the API too quickly.",e);
+        // Too many requests made to the API too quickly
+    } catch (InvalidRequestException e) {
+        logger.error("Invalid parameters were supplied to Stripe's API.",e);
+        // Invalid parameters were supplied to Stripe's API
+    } catch (AuthenticationException e) {
+        logger.error("Authentication with Stripe's API failed.",e);
+        // Authentication with Stripe's API failed
+        // (maybe you changed API keys recently)
+    } catch (APIConnectionException e) {
+        logger.error("Network communication with Stripe failed.",e);
+        // Network communication with Stripe failed
+    } catch (StripeException e) {
+        logger.error("Display a very generic error to the user, and maybe send.",e);
+        // Display a very generic error to the user, and maybe send
+        // yourself an email
+    } catch (Exception e) {
+        logger.error("Something else happened, completely unrelated to Stripe.",e);
+        // Something else happened, completely unrelated to Stripe
+    }
+}
 private static void deleteAllCustomer(){
     Stripe.apiKey = "sk_test_6tiWo6JN3nPuJ0A3fZrXYUAv";
     Map<String, Object> customerParams = new HashMap<String, Object>();

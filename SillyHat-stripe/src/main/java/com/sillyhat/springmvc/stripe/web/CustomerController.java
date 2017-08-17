@@ -53,7 +53,7 @@ public class CustomerController {
     @ResponseBody
     @ApiOperation(value = "根据mozatId查询用户卡片列表", response = SillyHatAJAX.class, notes = "根据mozatId查询用户卡片列表,如未绑定卡片skipBoundCard=true,否则skipBoundCard=false,并返回cardList")
 //    @ApiImplicitParams({
-//        @ApiImplicitParam(name = "mozatId", value = "客户身份唯一性标识号", required = true, dataType = "string", paramType = "header")
+//        @ApiImplicitParam(name = "mozatId", value = "客户身份唯一性标识号", required = true, dataType = "string", paramType = "path")
 //    })
     @RequestMapping(value = "/queryUserCardByMozatId/{mozatId}", method = {RequestMethod.GET,RequestMethod.POST})
     public SillyHatAJAX queryUserCardByMozatId(@PathVariable String mozatId) {

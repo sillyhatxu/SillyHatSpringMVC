@@ -42,7 +42,7 @@ public class StripeServiceImpl implements StripeService{
         try {
             Map<String,Object> params = new HashMap<String,Object>();
             params.put("customer",customerId);
-            RequestOptions requestOptions = RequestOptions.builder().setApiKey(STRIPE_API_KEY).setStripeVersion("2017-06-05").build();;
+            RequestOptions requestOptions = RequestOptions.builder().setApiKey(STRIPE_API_KEY).setStripeVersion("2017-06-05").build();
 //            params.put("stripe_version", DateUtils.getToday());
             ephemeralKey = EphemeralKey.create(params,requestOptions);
         } catch (CardException e) {
@@ -75,7 +75,7 @@ public class StripeServiceImpl implements StripeService{
 
     @Override
     public RequestOptions getStripeRequestOptions() {
-       return RequestOptions.builder().setApiKey(STRIPE_API_KEY).build();
+       return RequestOptions.builder().setApiKey(STRIPE_API_KEY).setStripeVersion("2017-06-05").build();
     }
 
     @Override

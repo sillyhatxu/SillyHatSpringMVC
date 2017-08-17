@@ -1,5 +1,7 @@
 package com.sillyhat.springmvc.stripe.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 public class PaymentDetailDTO implements Serializable {
@@ -8,6 +10,7 @@ public class PaymentDetailDTO implements Serializable {
 
     private String customerId;
 
+    @JsonProperty("mozat_id")
     private String mozatId;
 
     private Long amount;

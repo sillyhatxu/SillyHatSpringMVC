@@ -1,5 +1,16 @@
 lsof -i:****
 
+mysql -u root -p
+
+sillyhat
+
+
+set GLOBAL max_connections=2000;
+
+show variables like 'max_connections';
+
+
+
 正确修改MySQL最大连接数的三种好用方案
 以下的文章主要介绍的是正确修改MySQL最大连接数的三种好用方案，我们大家都知道MySQL数据库在安装完之后，默认的MySQL数据库，其最大连接数为100，一般流量稍微大一点的论坛或网站这个连接数是远远不够的，增加默认MySQL连接数的方法有两个。
 
@@ -14,7 +25,7 @@ MySQL最大连接数默认是100客户端登录：
 MySQL -u username -p password
 设置新的MySQL最大连接数为200：
 show variables like 'max_connections';
-MySQL> set GLOBAL max_connections=2000
+MySQL> set GLOBAL max_connections=2000;
 显示当前运行的Query：
 
 MySQL> show processlist
